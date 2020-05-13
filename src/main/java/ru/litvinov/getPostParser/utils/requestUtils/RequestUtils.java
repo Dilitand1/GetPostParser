@@ -1,11 +1,9 @@
-package ru.litvinov.getPostParser.requestUtils;
+package ru.litvinov.getPostParser.utils.requestUtils;
 
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.util.Iterator;
 
 public class RequestUtils {
@@ -24,7 +22,7 @@ public class RequestUtils {
             connection.setConnectTimeout(1500); //задаем таймауты
             connection.setReadTimeout(1500);
 
-            connection.setRequestProperty("Content-Language", "en-US"); //пример хеадеров
+            //connection.setRequestProperty("Content-Language", "en-US"); //пример хеадеров
 
             if (HttpURLConnection.HTTP_OK == connection.getResponseCode()){
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"Windows-1251"));
@@ -34,7 +32,9 @@ public class RequestUtils {
                 }
             }
             else {
+                System.out.println(connection.getResponseMessage());
                 System.out.println(connection.getResponseCode());
+                System.out.println(connection.getErrorStream());
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -43,10 +43,10 @@ public class RequestUtils {
     }
 
     //post честно скопированный из тырнета
-    public static String postRequest(){
+    public static String postRequest(String myUrl, String body){
         try {
 
-            URL url = new URL("https://studytutorial.in/post.php"); // here is your URL path
+            URL url = new URL(myUrl); // here is your URL path
 
             JSONObject postDataParams = new JSONObject();
             postDataParams.put("name", "abc");
@@ -96,6 +96,12 @@ public class RequestUtils {
         catch(Exception e){
             return new String("Exception: " + e.getMessage());
         }
+    }
+
+    public static String encodeString(String s) throws MalformedURLException, URISyntaxException {
+        URL url4 = new URL(s);
+        URI uri = new URI(url4.getProtocol(), url4.getUserInfo(), IDN.toASCII(url4.getHost()), url4.getPort(), url4.getPath(), url4.getQuery(), url4.getRef());
+        return uri.toASCIIString();
     }
 
     public static String getPostDataString(JSONObject params) throws Exception {

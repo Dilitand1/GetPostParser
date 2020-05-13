@@ -1,4 +1,4 @@
-package ru.litvinov.getPostParser.jsonUtils;
+package ru.litvinov.getPostParser.utils.jsonUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
