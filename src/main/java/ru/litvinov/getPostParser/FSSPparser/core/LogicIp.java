@@ -21,21 +21,21 @@ public class LogicIp implements Logic {
     }
 
     @Override
-    public GetResponse sendGet(String numip) {
+    public GetResponse sendGet(String numip) throws Exception {
         String s = String.format("https://api-ip.fssprus.ru/api/v1.0/search/ip?token=%s&number=%s",token, URLEncoder.encode(numip));
         GetResponse getResponse = (GetResponse) JsonUtils.jsonToObject(RequestUtils.getRequest(s),GetResponse.class);
         return getResponse;
     }
 
     @Override
-    public GetResult takeResult(String task) {
+    public GetResult takeResult(String task) throws Exception {
         String s = String.format("https://api-ip.fssprus.ru/api/v1.0/result?token=%s&task=%s",token,task);
         GetResult getResult = (GetResult) JsonUtils.jsonToObject(RequestUtils.getRequest(s),GetResult.class);
         return getResult;
     }
 
     @Override
-    public GetResponse sendPost(String body) {
+    public GetResponse sendPost(String body) throws Exception {
         //задаем хедеры
         Map<String,String> map = new LinkedHashMap<String, String>();
         map.put("Content-Type", "application/json; utf-8");

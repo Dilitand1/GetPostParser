@@ -1,10 +1,9 @@
 package ru.litvinov.getPostParser.FSSPparser.core;
 
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
-import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Params;
-import ru.litvinov.getPostParser.FSSPparser.models.postRequest.ParamsIp;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
-import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Request;
+import ru.litvinov.getPostParser.FSSPparser.models.result.GetResult;
+import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +18,27 @@ public abstract class CoreFssp {
     }
 
     public abstract List<PostRequest> createListObjectsForPost(List inputList);
-    public abstract PostRequest createObject(List list);
-    public abstract List<Request> createListRequest(List list);
 
-    public List<GetResponse> sendPosts(List inputList){
+    //Направляем запросы
+    public List<GetResponse> sendPosts(List inputList) throws Exception {
         List<PostRequest> requestList = createListObjectsForPost(inputList);
         List<GetResponse> responseList = new ArrayList<>();
         for (int i = 0;i < requestList.size();i++){
-            responseList.add(logic.sendPost())
+            String requestString = JsonUtils.objectToJson(requestList.get(i));
+            GetResponse getResponse = (GetResponse) logic.sendPost(requestString);
+            responseList.add(getResponse);
         }
+        return responseList;
+    }
+
+    //Получаем результаты
+    public List<GetResult> getResults(List<String> inputList) throws Exception {
+        List<GetResult> resultList = new ArrayList<>();
+        for (int i = 0; i < inputList.size();i++){
+            GetResult getResult = (GetResult) logic.takeResult(inputList.get(i));
+            resultList.add(getResult);
+        }
+        return resultList;
     }
 
     public String getToken() {

@@ -4,48 +4,38 @@ import ru.litvinov.getPostParser.FSSPparser.models.postRequest.ParamsIp;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Request;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CoreFsspIp extends CoreFssp {
 
-    public CoreFsspIp(String token) {
-        super(token);
+    public CoreFsspIp(String token, Logic logic) {
+        super(token, logic);
     }
+
+
 
     @Override
     public List<PostRequest> createListObjectsForPost(List inputList) {
-        return null;
+        List<PostRequest> postRequests = new ArrayList<>();
+        //режем на части по 50 штук.
+        for (int i = 0; i <= inputList.size() / 50; i++) {
+            PostRequest postRequest = new PostRequest();
+            postRequest.setToken(getToken());
+            List<Request> requests = new ArrayList<>();
+            int counter = 0;
+            for (int j = i * 50; j < inputList.size() && counter != 50; j++, counter++) {
+                Request request1 = new Request();
+                ParamsIp paramsIp = new ParamsIp();
+                paramsIp.setNumber(inputList.get(j).toString());
+                request1.setType(3);
+                request1.setParams(paramsIp);
+                requests.add(request1);
+            }
+            postRequest.setRequest(requests);
+            postRequests.add(postRequest);
+        }
+        return postRequests;
     }
-
-    @Override
-    public List<Request> createListRequest(List list) {
-        return null;
-    }
-
-    @Override
-    public PostRequest createObject(List list) {
-        ParamsIp params1 = new ParamsIp();
-        params1.setNumber("93183/18/38035-ИП");
-
-        ParamsIp params2 = new ParamsIp();
-        params2.setNumber("19163/20/24026-ИП");
-
-        Request request1 = new Request();
-        request1.setType(3);
-        request1.setParams(params1);
-
-        Request request2 = new Request();
-        request2.setType(3);
-        request2.setParams(params2);
-
-        List<Request> requests = Arrays.asList(request1,request2);
-
-        PostRequest postRequest = new PostRequest();
-        postRequest.setToken(super.getToken());
-        postRequest.setRequest(requests);
-
-        return postRequest;
-    }
-
 }

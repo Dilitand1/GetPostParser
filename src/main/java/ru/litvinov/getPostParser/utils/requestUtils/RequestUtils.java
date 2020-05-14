@@ -10,17 +10,14 @@ import java.util.Map;
 
 public class RequestUtils {
 
-    public static String getRequest(String query) {
+    public static String getRequest(String query) throws Exception {
         HttpURLConnection connection = null;
         StringBuilder builder = new StringBuilder();
         try {
             connection = (HttpURLConnection) new URL(query).openConnection();
-
             connection.setDoOutput(true);
             connection.setDoInput(true);
-
             connection.setRequestMethod("GET"); //Задаем тип запроса
-
             connection.setConnectTimeout(1500); //задаем таймауты
             connection.setReadTimeout(1500);
 
@@ -36,15 +33,16 @@ public class RequestUtils {
                 System.out.println(connection.getResponseMessage());
                 System.out.println(connection.getResponseCode());
                 System.out.println(connection.getErrorStream());
+                throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + query);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return builder.toString();
     }
 
     //post
-    public static String postRequest(String myUrl, String body, Map<String, String> headers) {
+    public static String postRequest(String myUrl, String body, Map<String, String> headers) throws Exception {
         try {
             URL url = new URL(myUrl); // here is your URL path
             HttpURLConnection conn = (HttpURLConnection) url.openConnection(); //открываем коннект
@@ -87,7 +85,7 @@ public class RequestUtils {
                     return sb.toString();
                 }
             } else {
-                throw new Exception();
+                throw new Exception(conn.getResponseCode() + "\n" + conn.getResponseMessage() + "\n" + body);
             }
         } catch (IOException e) {
             e.printStackTrace();
