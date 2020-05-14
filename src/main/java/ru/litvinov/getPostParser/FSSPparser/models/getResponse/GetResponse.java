@@ -44,30 +44,11 @@ public class GetResponse {
 
     @Override
     public String toString() {
-        return "GetResponse{" +
-                "status='" + status + '\'' +
-                ", code=" + code +
-                ", exception='" + exception + '\'' +
-                ", response=" + response.task +
-                '}';
+        return //"GetResponse{" +
+                response.task + "~" + status + "~" + code + "~" + exception + "_";
     }
 }
 
-class Response_ {
-    public String task;
-
-    Response_(){
-
-    }
-
-    public String getTask() {
-        return task;
-    }
-
-    public void setTask(String task) {
-        this.task = task;
-    }
-}
 
 /*
 {
