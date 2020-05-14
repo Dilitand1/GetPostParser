@@ -1,24 +1,42 @@
 package ru.litvinov.getPostParser;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.*;
+import java.util.Iterator;
 
 public class Main {
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        String url2 = "https://api-ip.fssprus.ru/api/v1.0/search/physical?token=ZYrCH4sHnb89&region=23&firstname=Дмитрий&secondname=Андреевич&lastname=Литвинов&birthdate=19.06.1985";
-        String url = "https://api-ip.fssprus.ru/api/v1.0/search/physical?token=ZYrCH4sHnb89&region=23&firstname=%D0%94%D0%BC%D0%B8%D1%82%D1%80%D0%B8%D0%B9&secondname=%D0%90%D0%BD%D0%B4%D1%80%D0%B5%D0%B5%D0%B2%D0%B8%D1%87&lastname=%D0%9B%D0%B8%D1%82%D0%B2%D0%B8%D0%BD%D0%BE%D0%B2&birthdate=19.06.1985";
 
-        String url3 = "https://api-ip.fssprus.ru/api/v1.0/search/physical?token=" + URLEncoder.encode("ZYrCH4sHnb89&region=23&firstname=Дмитрий&secondname=Андреевич&lastname=Литвинов&birthdate=19.06.1985");
+    public static String getPostDataString(JSONObject params) throws Exception {
 
-        URL url4= new URL(url2);
-        URI uri = new URI(url4.getProtocol(), url4.getUserInfo(), IDN.toASCII(url4.getHost()), url4.getPort(), url4.getPath(), url4.getQuery(), url4.getRef());
-        String correctEncodedURL=uri.toASCIIString();
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
 
+        Iterator<String> itr = params.keys();
 
-        System.out.println(url);
-        System.out.println(url3);
-        System.out.println(correctEncodedURL);
+        while(itr.hasNext()){
 
+            String key= itr.next();
+            Object value = params.get(key);
+
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(key, "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
+
+        }
+        return result.toString();
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        int x = 50%50;
+        System.out.println(x);
 
         /*
         URL obj = new URL(url);
