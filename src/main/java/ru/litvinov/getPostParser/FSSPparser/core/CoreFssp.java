@@ -45,7 +45,7 @@ public abstract class CoreFssp {
         List<String> listOfIp = Files.readAllLines(Paths.get(getInputFile()));
         List<GetResponse> responses = sendPosts(listOfIp);
         for (GetResponse response : responses) {
-            FileUtils.writeFile(response.getResponse().getTask() + "~" + response.getStatus() + "~" + response.getCode() + "~" + response.getException(), getOutputSuccessFile(), true);
+            FileUtils.writeFile(response.getResponse().getTask() + "~" + response.getStatus() + "~" + response.getCode() + "~" + response.getException(), getOutputSuccessFile() + "\n", true);
         }
     }
 

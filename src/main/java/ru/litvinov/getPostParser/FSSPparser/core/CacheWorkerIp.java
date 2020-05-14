@@ -40,12 +40,16 @@ public class CacheWorkerIp {
                 GetResponse getResponse = new GetResponse();
                 Response_ response_ = new Response_();
                 response_.setTask(splitString[1]);
+                getResponse.setResponse(response_);
                 getResponse.setStatus(splitString[2]);
                 getResponse.setCode(Integer.parseInt(splitString[3]));
                 getResponse.setException(splitString[4]);
+
                 cacheMap.put(splitString[0], getResponse);
-                System.out.println("Кэш загружен");
             }
+            printCache();
+            System.out.println("Кэш загружен");
+
         } catch (IOException e) {
             System.out.println("Кэш не найден");
             //e.printStackTrace();
@@ -59,7 +63,7 @@ public class CacheWorkerIp {
             String requestIp = requests.get(i).getParams().getNumber();
             if (cacheMap.get(requestIp) == null || !cacheMap.get(requestIp).getStatus().equals("success")){
                 cacheMap.put(requestIp,getResponse);
-                System.out.println("sended:" + requestIp + "~" + getResponse);
+                //System.out.println("sended:" + requestIp + "~" + getResponse);
             }
         }
     }
@@ -77,6 +81,8 @@ public class CacheWorkerIp {
     }
 
     public void printCache(){
-
+        for(Map.Entry<String,GetResponse> entry : cacheMap.entrySet()){
+            System.out.println(entry.getKey() + " " + entry.getValue().toString());
+        }
     }
 }

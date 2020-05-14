@@ -50,7 +50,8 @@ public class FileUtils {
         try {
             Files.deleteIfExists(Paths.get(path));
             for(Map.Entry<String,T> entry : texts.entrySet()) {
-                writeFile(entry.getKey() + "~" + entry.getValue() + "\n", path, true);
+                String output = entry.getKey() + "~" + entry.getValue() + "\n";
+                writeFile(output, path, true);
             }
         } catch (IOException e) {
             e.printStackTrace();
