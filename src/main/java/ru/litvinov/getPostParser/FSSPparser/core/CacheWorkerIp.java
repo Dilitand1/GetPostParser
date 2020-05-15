@@ -38,9 +38,9 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
                 System.out.println("Кэш устарел");
                 throw new IOException("Кэш устарел");
             }
-
             //Реализация без сериализации
-/*            List<String> cacheList = Files.readAllLines(Paths.get(casheFile));
+                /*
+                List<String> cacheList = Files.readAllLines(Paths.get(casheFile));
             for (String s : cacheList) {
                 String[] splitString = s.split("~");
                 GetResponse getResponse = new GetResponse();
@@ -52,7 +52,7 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
                 getResponse.setException(splitString[4]);
                 cacheMap.put(splitString[0], getResponse);
                 }
-*/
+                */
             CacheWorkerIp cacheWorkerIp = (CacheWorkerIp) SerializationImpl.loadObject(casheFile);
             this.cacheMap.putAll(cacheWorkerIp.cacheMap);
             printCache();
@@ -80,16 +80,17 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
     @Override
     public void saveCache() {
         //FileUtils.writeFile(cacheMap, casheFile);
-        SerializationImpl.saveObject(this,casheFile);
+        SerializationImpl.saveObject(this, casheFile);
     }
 
     @Override
     public void saveCasheToFile(String outputFile) {
         FileUtils.removeFile(outputFile);
-        for (Map.Entry<String,GetResponse> entry : cacheMap.entrySet()) {
-            FileUtils.writeFile(entry.getKey() + "~" + entry.getValue().getResponse().getTask()
+        for (Map.Entry<String, GetResponse> entry : cacheMap.entrySet()) {
+            FileUtils.writeFile(entry.getValue().getResponse().getTask()
                     + "~" + entry.getValue().getStatus() + "~" + entry.getValue().getCode()
-                    + "~" + entry.getValue().getException() + "\n", outputFile, true);
+                    + "~" + entry.getValue().getException()
+                    + "~" + entry.getKey() + "\n", outputFile, true);
         }
     }
 }

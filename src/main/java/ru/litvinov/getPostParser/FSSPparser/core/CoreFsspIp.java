@@ -6,6 +6,8 @@ import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Request;
 import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class CoreFsspIp extends CoreFssp {
     }
 
     public CoreFsspIp(String token, Logic logic, String inputFile, String outputFailedFile, String outputSuccessFile, CacheWorkerIp cacheWorkerIp) {
-        super(token, logic, inputFile,outputFailedFile, outputSuccessFile, cacheWorkerIp);
+        super(token, logic, inputFile, outputFailedFile, outputSuccessFile, cacheWorkerIp);
     }
 
     @Override
@@ -32,12 +34,12 @@ public class CoreFsspIp extends CoreFssp {
             //отправляем запрос
             getResponse = (GetResponse) getLogic().sendPost(requestString);
             //пишем в кэш
-            getCacheWork().writePostRequestResult(postRequest,getResponse);
+            getCacheWork().writePostRequestResult(postRequest, getResponse);
             Thread.sleep(5000); //спим 5 секунд
         } catch (Exception e) {
             //если косяк то обрабатываем ошибку
             //System.out.println(e.getMessage());
-            if (e.getMessage().contains("Too Many")){
+            if (e.getMessage().contains("Too Many")) {
                 //Если много запросов то ждем 30 сек
                 System.out.println("Много запросов спим 1 минуту");
                 Thread.sleep(60000);
@@ -71,5 +73,23 @@ public class CoreFsspIp extends CoreFssp {
             postRequests.add(postRequest);
         }
         return postRequests;
+    }
+
+    //Направляем запросы
+    @Override
+    public void sendPosts() throws Exception {
+        List<String> listOfIpOrClients = Files.readAllLines(Paths.get(getInputFile())); //грузим все строки
+        getCacheWork().init();//грузим кэш
+        listOfIpOrClients.removeAll(getCacheWork().getCacheMap().keySet());//удалаяем из списка то что уже загружено
+        if (!listOfIpOrClients.isEmpty()) {
+            List<PostRequest> requestList = createListObjectsForPost(listOfIpOrClients);
+            List<GetResponse> responseList = new ArrayList<>();
+            for (int i = 0; i < requestList.size(); i++) {
+                GetResponse getResponse = sendPostProcessor(requestList.get(i));
+                responseList.add(getResponse);
+                getCacheWork().saveCache();
+            }
+        }
+        getCacheWork().saveCasheToFile(getOutputTaskFile());
     }
 }

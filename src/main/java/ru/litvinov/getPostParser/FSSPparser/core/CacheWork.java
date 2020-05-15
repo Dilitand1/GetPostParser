@@ -7,7 +7,6 @@ import ru.litvinov.getPostParser.utils.serialize.SerializationImpl;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public abstract class CacheWork implements Serializable {
@@ -23,17 +22,18 @@ public abstract class CacheWork implements Serializable {
     }
 
     abstract public void writePostRequestResult(PostRequest postRequest, GetResponse getResponse);
+
     abstract public void init();
+
     abstract public void saveCasheToFile(String outputFile);
 
     public void saveCache() {
-        //FileUtils.writeFile(cacheMap, casheFile);
-        SerializationImpl.saveObject(this,casheFile);
+        SerializationImpl.saveObject(this, casheFile);
     }
 
-    public void printCache(){
+    public void printCache() {
         Iterator iterator = cacheMap.entrySet().iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             System.out.println(entry.getKey() + " " + entry.getValue());
         }

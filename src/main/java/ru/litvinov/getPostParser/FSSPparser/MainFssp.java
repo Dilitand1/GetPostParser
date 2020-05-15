@@ -23,6 +23,6 @@ public class MainFssp {
         core.setInputFile("testfile.txt");
         core.setCacheWork(new CacheWorkerIp());
         core.getCacheWork().init();
-        core.sendPostProcessing();
+        core.sendPosts();
     }
 }
