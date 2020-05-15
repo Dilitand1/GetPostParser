@@ -1,4 +1,4 @@
 Реализация get/post. https://github.com/Dilitand1/GetPostParser/tree/master/src/main/java/ru/litvinov/getPostParser/utils/requestUtils
-Реализован пример работы с Rest сервисом ФССП.
+\nРеализован пример работы с Rest сервисом ФССП.
 
 пожалуй лучший сайт для преобразования json в класс: https://app.quicktype.io/
