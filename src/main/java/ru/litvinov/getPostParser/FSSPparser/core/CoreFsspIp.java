@@ -12,14 +12,15 @@ import java.util.List;
 public class CoreFsspIp extends CoreFssp {
 
     public CoreFsspIp() {
+
     }
 
     public CoreFsspIp(String token, Logic logic) {
         super(token, logic);
     }
 
-    public CoreFsspIp(String token, Logic logic, String inputFile, String casheFile, String outputFailedFile, String outputSuccessFile, CacheWorkerIp cacheWorkerIp) {
-        super(token, logic, inputFile, casheFile, outputFailedFile, outputSuccessFile, cacheWorkerIp);
+    public CoreFsspIp(String token, Logic logic, String inputFile, String outputFailedFile, String outputSuccessFile, CacheWorkerIp cacheWorkerIp) {
+        super(token, logic, inputFile,outputFailedFile, outputSuccessFile, cacheWorkerIp);
     }
 
     @Override
@@ -31,11 +32,11 @@ public class CoreFsspIp extends CoreFssp {
             //отправляем запрос
             getResponse = (GetResponse) getLogic().sendPost(requestString);
             //пишем в кэш
-            getCacheWorkerIp().writePostRequestResultIp(postRequest,getResponse);
+            getCacheWork().writePostRequestResult(postRequest,getResponse);
             Thread.sleep(5000); //спим 5 секунд
         } catch (Exception e) {
             //если косяк то обрабатываем ошибку
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
             if (e.getMessage().contains("Too Many")){
                 //Если много запросов то ждем 30 сек
                 System.out.println("Много запросов спим 1 минуту");
@@ -46,7 +47,6 @@ public class CoreFsspIp extends CoreFssp {
             }
         }
         //сохраняем кэш
-        getCacheWorkerIp().saveCache();
         return getResponse;
     }
 

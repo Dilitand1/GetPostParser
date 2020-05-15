@@ -1,7 +1,9 @@
 package ru.litvinov.getPostParser.FSSPparser.models.getResponse;
 
 
-public class Response_ {
+import java.io.Serializable;
+
+public class Response_ implements Serializable {
     public String task;
 
     public Response_(){

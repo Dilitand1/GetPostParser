@@ -14,10 +14,11 @@ public abstract class CoreFssp {
     private String token;
     private Logic logic;
     private String inputFile = "inputFile.txt";
-    private String casheFile = "cacheFile.txt";
     private String outputFailedFile = "outputFailedFile.txt";
-    private String outputSuccessFile = "outputSuccessFile.txt";
-    private CacheWorkerIp cacheWorkerIp = new CacheWorkerIp(casheFile);
+    private String outputTaskFile = "outputTaskFile.txt";
+    private String outputSuccessResultFile = "outputSuccessResultFile.txt";
+    private String outputFailedResultFile = "outputFailedResultFile.txt";
+    private CacheWork cacheWork;
 
     public CoreFssp() {
 
@@ -28,25 +29,26 @@ public abstract class CoreFssp {
         this.logic = logic;
     }
 
-    public CoreFssp(String token, Logic logic, String inputFile, String casheFile, String outputFailedFile, String outputSuccessFile, CacheWorkerIp cacheWorkerIp) {
+    public CoreFssp(String token, Logic logic, String inputFile, String outputFailedFile, String outputTaskFile, CacheWork cacheWork) {
         this.token = token;
         this.logic = logic;
         this.inputFile = inputFile;
-        this.casheFile = casheFile;
         this.outputFailedFile = outputFailedFile;
-        this.outputSuccessFile = outputSuccessFile;
-        this.cacheWorkerIp = cacheWorkerIp;
+        this.outputTaskFile = outputTaskFile;
+        this.cacheWork = cacheWork;
     }
 
     public abstract List<PostRequest> createListObjectsForPost(List inputList);
     public abstract GetResponse sendPostProcessor(PostRequest postRequest) throws Exception;
 
     public void sendPostProcessing() throws Exception {
-        List<String> listOfIp = Files.readAllLines(Paths.get(getInputFile()));
-        List<GetResponse> responses = sendPosts(listOfIp);
-        for (GetResponse response : responses) {
-            FileUtils.writeFile(response.getResponse().getTask() + "~" + response.getStatus() + "~" + response.getCode() + "~" + response.getException(), getOutputSuccessFile() + "\n", true);
+        List<String> listOfIpOrClients = Files.readAllLines(Paths.get(getInputFile())); //грузим все стоки
+        cacheWork.init();//грузим кэш
+        listOfIpOrClients.removeAll(cacheWork.getCacheMap().keySet());//удалаяем из списка то что уже загружено
+        if (!listOfIpOrClients.isEmpty()) {
+            List<GetResponse> responses = sendPosts(listOfIpOrClients);//запусаем запросы
         }
+        cacheWork.saveCasheToFile(outputTaskFile);
     }
 
     //Направляем запросы
@@ -56,6 +58,7 @@ public abstract class CoreFssp {
         for (int i = 0; i < requestList.size(); i++) {
             GetResponse getResponse = sendPostProcessor(requestList.get(i));
             responseList.add(getResponse);
+            cacheWork.saveCache();
         }
         return responseList;
     }
@@ -102,27 +105,19 @@ public abstract class CoreFssp {
         this.outputFailedFile = outputFailedFile;
     }
 
-    public String getOutputSuccessFile() {
-        return outputSuccessFile;
+    public String getOutputTaskFile() {
+        return outputTaskFile;
     }
 
-    public void setOutputSuccessFile(String outputSuccessFile) {
-        this.outputSuccessFile = outputSuccessFile;
+    public void setOutputTaskFile(String outputSuccessFile) {
+        this.outputTaskFile = outputSuccessFile;
     }
 
-    public String getCasheFile() {
-        return casheFile;
+    public CacheWork getCacheWork() {
+        return cacheWork;
     }
 
-    public void setCasheFile(String casheFile) {
-        this.casheFile = casheFile;
-    }
-
-    public CacheWorkerIp getCacheWorkerIp() {
-        return cacheWorkerIp;
-    }
-
-    public void setCacheWorkerIp(CacheWorkerIp cacheWorkerIp) {
-        this.cacheWorkerIp = cacheWorkerIp;
+    public void setCacheWork(CacheWork cacheWork) {
+        this.cacheWork = cacheWork;
     }
 }

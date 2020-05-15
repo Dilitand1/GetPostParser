@@ -76,6 +76,11 @@ public class FileUtils {
         }
     }
 
+    public static synchronized void removeFile(String fileName){
+        if (fileExists(fileName))
+            new File(fileName).delete();
+    }
+
     public static boolean fileExists(String path) {
         File file = new File(path);
         if (file.exists()) {

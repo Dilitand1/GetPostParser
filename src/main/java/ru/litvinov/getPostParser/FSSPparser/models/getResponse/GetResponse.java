@@ -1,6 +1,8 @@
 package ru.litvinov.getPostParser.FSSPparser.models.getResponse;
 
-public class GetResponse {
+import java.io.Serializable;
+
+public class GetResponse implements Serializable {
     private String status;
     private int code;
     private String exception;

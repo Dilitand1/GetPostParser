@@ -3,7 +3,26 @@ package ru.litvinov.getPostParser.utils.jsonUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-//для успешного преобразования нужно Pojo - геттеры, сеттеры и конструктор по умолячанию
+/**
+ *для успешного преобразования нужно Pojo - геттеры, сеттеры и конструктор по умолячанию
+ *
+ * Зависимости:
+ *          <dependency>
+ *             <groupId>org.json</groupId>
+ *             <artifactId>json</artifactId>
+ *             <version>20190722</version>
+ *         </dependency>
+ *         <dependency>
+ *             <groupId>com.fasterxml.jackson.core</groupId>
+ *             <artifactId>jackson-core</artifactId>
+ *             <version>2.10.0</version>
+ *         </dependency>
+ *         <dependency>
+ *             <groupId>com.fasterxml.jackson.core</groupId>
+ *             <artifactId>jackson-databind</artifactId>
+ *             <version>2.10.0</version>
+ *         </dependency>
+ */
 public class JsonUtils {
 
     public static String objectToJson(Object obj){

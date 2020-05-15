@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class RequestUtils {
 
+    //get
     public static String getRequest(String query) throws Exception {
         HttpURLConnection connection = null;
         StringBuilder builder = new StringBuilder();
@@ -30,9 +31,6 @@ public class RequestUtils {
                     builder.append(line);
                 }
             } else {
-                System.out.println(connection.getResponseMessage());
-                System.out.println(connection.getResponseCode());
-                System.out.println(connection.getErrorStream());
                 throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + query);
             }
         } catch (IOException e) {
@@ -93,43 +91,17 @@ public class RequestUtils {
         return null;
     }
 
+    /**
+     * Преобразует строку в специальный формат для отправки url
+     * @param s
+     * @return
+     * @throws MalformedURLException
+     * @throws URISyntaxException
+     */
     public static String encodeString(String s) throws MalformedURLException, URISyntaxException {
         URL url4 = new URL(s);
         URI uri = new URI(url4.getProtocol(), url4.getUserInfo(), IDN.toASCII(url4.getHost()), url4.getPort(), url4.getPath(), url4.getQuery(), url4.getRef());
         return uri.toASCIIString();
     }
-
-//
-//    public static String getPostDataString(JSONObject params) throws Exception {
-
-//    JSONObject postDataParams = new JSONObject();
-    //postDataParams.put("name", "abc");
-    //postDataParams.put("email", "abc@gmail.com");
-
-
-//
-//        StringBuilder result = new StringBuilder();
-//        boolean first = true;
-//
-//        Iterator<String> itr = params.keys();
-//
-//        while(itr.hasNext()){
-//
-//            String key= itr.next();
-//            Object value = params.get(key);
-//
-//            if (first)
-//                first = false;
-//            else
-//                result.append("&");
-//
-//            result.append(URLEncoder.encode(key, "UTF-8"));
-//            result.append("=");
-//            result.append(URLEncoder.encode(value.toString(), "UTF-8"));
-//
-//        }
-//        return result.toString();
-//    }
-
 
 }

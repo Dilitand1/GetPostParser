@@ -1,5 +1,6 @@
 package ru.litvinov.getPostParser.FSSPparser;
 
+import ru.litvinov.getPostParser.FSSPparser.core.CacheWorkerIp;
 import ru.litvinov.getPostParser.FSSPparser.core.CoreFssp;
 import ru.litvinov.getPostParser.FSSPparser.core.CoreFsspIp;
 import ru.litvinov.getPostParser.FSSPparser.core.LogicIp;
@@ -20,9 +21,8 @@ public class MainFssp {
     public static void main(String[] args) throws Exception {
         CoreFssp core = new CoreFsspIp(token2, new LogicIp());
         core.setInputFile("testfile.txt");
-        core.getCacheWorkerIp().init();
+        core.setCacheWork(new CacheWorkerIp());
+        core.getCacheWork().init();
         core.sendPostProcessing();
-
-
     }
 }
