@@ -36,28 +36,28 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
             // yeasterday.add(Calendar.DATE,-1);
             if (creationDate.getTime() < (new Date().getTime() - (22 * 60 * 60 * 1000)) /*yeasterday.getTime().getTime()*/) {
                 System.out.println("Кэш устарел");
+                FileUtils.renameFile(casheFile,"old" + casheFile);
                 throw new IOException("Кэш устарел");
             }
             //Реализация без сериализации
                 /*
                 List<String> cacheList = Files.readAllLines(Paths.get(casheFile));
-            for (String s : cacheList) {
-                String[] splitString = s.split("~");
-                GetResponse getResponse = new GetResponse();
-                Response_ response_ = new Response_();
-                response_.setTask(splitString[1]);
-                getResponse.setResponse(response_);
-                getResponse.setStatus(splitString[2]);
-                getResponse.setCode(Integer.parseInt(splitString[3]));
-                getResponse.setException(splitString[4]);
-                cacheMap.put(splitString[0], getResponse);
+                for (String s : cacheList) {
+                    String[] splitString = s.split("~");
+                    GetResponse getResponse = new GetResponse();
+                    Response_ response_ = new Response_();
+                    response_.setTask(splitString[1]);
+                    getResponse.setResponse(response_);
+                    getResponse.setStatus(splitString[2]);
+                    getResponse.setCode(Integer.parseInt(splitString[3]));
+                    getResponse.setException(splitString[4]);
+                    cacheMap.put(splitString[0], getResponse);
                 }
                 */
             CacheWorkerIp cacheWorkerIp = (CacheWorkerIp) SerializationImpl.loadObject(casheFile);
             this.cacheMap.putAll(cacheWorkerIp.cacheMap);
             printCache();
             System.out.println("Кэш загружен");
-
         } catch (IOException e) {
             System.out.println("Кэш не найден");
             //e.printStackTrace();
@@ -72,7 +72,6 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
             String requestIp = requests.get(i).getParams().getNumber();
             if (cacheMap.get(requestIp) == null || !cacheMap.get(requestIp).getStatus().equals("success")) {
                 cacheMap.put(requestIp, getResponse);
-                //System.out.println("sended:" + requestIp + "~" + getResponse);
             }
         }
     }

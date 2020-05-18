@@ -25,6 +25,7 @@ public class RequestUtils {
             //connection.setRequestProperty("Content-Language", "en-US"); //пример хеадеров
 
             if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
+                //получаем ответ
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "Windows-1251"));
                 String line = "";
                 while ((line = reader.readLine()) != null) {

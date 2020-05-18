@@ -24,7 +24,22 @@ public class LogicIp implements Logic {
     @Override
     public GetResult takeResult(String task, String token) throws Exception {
         String s = String.format("https://api-ip.fssprus.ru/api/v1.0/result?token=%s&task=%s", token, task);
-        GetResult getResult = (GetResult) JsonUtils.jsonToObject(RequestUtils.getRequest(s), GetResult.class);
+
+        GetResult getResult = null;
+        try {
+            getResult = (GetResult) JsonUtils.jsonToObject(RequestUtils.getRequest(s), GetResult.class);
+
+        } catch (Exception e){
+            System.out.println(e.getMessage().split("\n")[0] + "\t"  + e.getMessage().split("\n")[1]);
+            if (e.getMessage().contains("Too Many")) {
+                //Если много запросов то ждем 30 сек
+                System.out.println("Много запросов спим 1 минуту");
+                Thread.sleep(60000);
+                getResult = takeResult(task,token);
+            } else {
+                throw e;
+            }
+        }
         return getResult;
     }
 
@@ -36,8 +51,27 @@ public class LogicIp implements Logic {
         map.put("Accept", "application/json");
         //задаем url
         String url = "https://api-ip.fssprus.ru/api/v1.0/search/group";
-        String responseString = RequestUtils.postRequest(url, body, map);
-        return (GetResponse) JsonUtils.jsonToObject(responseString, GetResponse.class);
+;
+        GetResponse getResponse = null;
+        try {
+            //отправляем запрос
+            String responseString = RequestUtils.postRequest(url, body, map);
+            getResponse = (GetResponse) JsonUtils.jsonToObject(responseString, GetResponse.class);
+            Thread.sleep(5000); //спим 5 секунд
+        } catch (Exception e) {
+            //если косяк то обрабатываем ошибку
+            System.out.println(e.getMessage().split("\n")[0] + "\t"  + e.getMessage().split("\n")[1]);
+            if (e.getMessage().contains("Too Many")) {
+                //Если много запросов то ждем 30 сек
+                System.out.println("Много запросов спим 1 минуту");
+                Thread.sleep(60000);
+                getResponse = sendPost(body);
+            } else {
+                throw e;
+            }
+        }
+        //String responseString = RequestUtils.postRequest(url, body, map);
+        return getResponse;//(GetResponse) JsonUtils.jsonToObject(responseString, GetResponse.class);
     }
 
     @Override

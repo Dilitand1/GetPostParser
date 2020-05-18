@@ -3,9 +3,18 @@ package ru.litvinov.getPostParser.FSSPparser.core;
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
 import ru.litvinov.getPostParser.FSSPparser.models.result.GetResult;
+import ru.litvinov.getPostParser.FSSPparser.models.result.Response;
+import ru.litvinov.getPostParser.FSSPparser.models.result.ResponseResult;
+import ru.litvinov.getPostParser.FSSPparser.models.result.ResultResult;
+import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class CoreFssp {
     private String token;
@@ -35,19 +44,23 @@ public abstract class CoreFssp {
         this.cacheWork = cacheWork;
     }
 
-    public abstract List<PostRequest> createListObjectsForPost(List inputList);
-    public abstract GetResponse sendPostProcessor(PostRequest postRequest) throws Exception;
     public abstract void sendPosts() throws Exception;
+    public abstract void resultProcessor(String uuid, GetResult result);
 
     //Получаем результаты
-    public List<GetResult> getResults(List<String> inputList) throws Exception {
+    public List<GetResult> getResults() throws Exception {
+        //читаем строки из файла. Берем только первый столбец
+        List<String> inputList = Files.readAllLines(Paths.get(outputTaskFile)).stream().map(x-> x.split("~")[0]).distinct().collect(Collectors.toList());
         List<GetResult> resultList = new ArrayList<>();
         for (int i = 0; i < inputList.size(); i++) {
             GetResult getResult = (GetResult) logic.takeResult(inputList.get(i), token);
             resultList.add(getResult);
+            resultProcessor(inputList.get(i),getResult);//обработка результата
         }
         return resultList;
     }
+
+
 
     public String getToken() {
         return token;
@@ -95,5 +108,21 @@ public abstract class CoreFssp {
 
     public void setCacheWork(CacheWork cacheWork) {
         this.cacheWork = cacheWork;
+    }
+
+    public String getOutputSuccessResultFile() {
+        return outputSuccessResultFile;
+    }
+
+    public void setOutputSuccessResultFile(String outputSuccessResultFile) {
+        this.outputSuccessResultFile = outputSuccessResultFile;
+    }
+
+    public String getOutputFailedResultFile() {
+        return outputFailedResultFile;
+    }
+
+    public void setOutputFailedResultFile(String outputFailedResultFile) {
+        this.outputFailedResultFile = outputFailedResultFile;
     }
 }

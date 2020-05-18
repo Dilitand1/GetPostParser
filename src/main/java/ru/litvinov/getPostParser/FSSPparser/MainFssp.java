@@ -19,10 +19,20 @@ public class MainFssp {
     static String token2 = "2oFwTlKyEa92";
 
     public static void main(String[] args) throws Exception {
+        //runRequest();
+        runResult();
+    }
+
+    public static void runRequest() throws Exception {
         CoreFssp core = new CoreFsspIp(token2, new LogicIp());
         core.setInputFile("testfile.txt");
         core.setCacheWork(new CacheWorkerIp());
         core.getCacheWork().init();
         core.sendPosts();
+    }
+
+    public static void runResult() throws Exception {
+        CoreFssp coreFssp = new CoreFsspIp(token2,new LogicIp());
+        coreFssp.getResults();
     }
 }

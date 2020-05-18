@@ -81,6 +81,13 @@ public class FileUtils {
             new File(fileName).delete();
     }
 
+    public static synchronized void renameFile(String oldFilename, String newFilename){
+        if (fileExists(oldFilename)){
+            removeFile(newFilename);
+            new File(oldFilename).renameTo(new File(newFilename));
+        }
+    }
+
     public static boolean fileExists(String path) {
         File file = new File(path);
         if (file.exists()) {
