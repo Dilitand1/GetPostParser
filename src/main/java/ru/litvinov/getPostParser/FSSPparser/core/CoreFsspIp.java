@@ -7,6 +7,7 @@ import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Request;
 import ru.litvinov.getPostParser.FSSPparser.models.result.GetResult;
 import ru.litvinov.getPostParser.FSSPparser.models.result.ResponseResult;
 import ru.litvinov.getPostParser.FSSPparser.models.result.ResultResult;
+import ru.litvinov.getPostParser.FSSPparser.models.result.ResultUnion;
 import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
 import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 
@@ -56,41 +57,50 @@ public class CoreFsspIp extends CoreFssp {
 
     //Обрабатываем результаты
     //выходной файл
-    //uuid;status;code;exception;queryType;responseStatus;numIp;ExeProduction;Details;Subject;Department;Bailiff;IPEnd
-    public void resultProcessor(String uuid, GetResult result){
+    //uuid;status;code;exception;queryType;responseStatus;numIp;errorMessage;ExeProduction;Details;Subject;Department;Bailiff;IPEnd
+    public void resultProcessor(String uuid, GetResult result) {
         StringBuilder sb1 = new StringBuilder();
         sb1.append(uuid).append("~").append(new SimpleDateFormat("dd.MM.yyyy").format(new Date())).append("~")
                 .append(result.getStatus()).append("~")
                 .append(result.getCode()).append("~")
                 .append(result.getException()).append("~");
-        if (!result.getStatus().equals("success")){
-            FileUtils.writeFile(sb1.toString() + "\n", getOutputFailedResultFile(),true);
+        if (!result.getStatus().equals("success")) {
+            //Если результат не успешный то сразу пишем в ошибки
+            FileUtils.writeFile(sb1.toString() + "\n", getOutputFailedResultFile(), true);
             return;
         } else {
             //Если в респонзе что то есть то разбираем иначе пишем что пустой ответ
             ResponseResult responseResults[] = result.getResponse().getResult();
             if (responseResults.length == 0) {
-                FileUtils.writeFile(sb1.toString()  + "нет данных", getOutputSuccessResultFile(), true);
+                FileUtils.writeFile(sb1.toString() + "нет данных", getOutputSuccessResultFile(), true);
             } else {
                 //парсим массив
-                for(ResponseResult responseResult : responseResults){
+                for (ResponseResult responseResult : responseResults) {
                     StringBuilder sb2 = new StringBuilder();
                     sb2.append(responseResult.getQuery().getType()).append("~")
-                        .append(responseResult.getStatus()).append("~")
-                        .append(responseResult.getQuery().getParams().getNumber()).append("~"); //номер ИП
-                    ResultResult resultResults[] = responseResult.getResult();
-                    if (resultResults.length == 0){
-                        FileUtils.writeFile(sb1.toString() + sb2.toString() + "\n", getOutputSuccessResultFile(),true);
-                    }
-                    for (ResultResult resultResult : resultResults){
-                        sb2.append(resultResult.getName()).append("~")
-                                .append(resultResult.getExeProduction()).append("~")
-                                .append(resultResult.getDetails()).append("~")
-                                .append(resultResult.getSubject()).append("~")
-                                .append(resultResult.getDepartment()).append("~")
-                                .append(resultResult.getBailiff()).append("~")
-                                .append(resultResult.getIPEnd()).append("\n");
-                        FileUtils.writeFile(sb1.toString() + sb2.toString(), getOutputSuccessResultFile(),true);
+                            .append(responseResult.getStatus()).append("~")
+                            .append(responseResult.getQuery().getParams().getNumber()).append("~"); //номер ИП
+                    ResultUnion resultUnion = responseResult.getResult();
+                    if (resultUnion.getErrorResult() != null) {
+                        //Запрос с ошибкой
+                        sb2.append(resultUnion.getErrorResult().getMessage()).append("~");
+                        FileUtils.writeFile(sb1.toString() + sb2.toString(), getOutputSuccessResultFile(), true);
+                    } else {
+                        ResultResult resultResults[] = resultUnion.getSuccessResult();
+                        sb2.append("~");//пустая колонка для ошибки
+                        if (resultResults.length == 0) {
+                            FileUtils.writeFile(sb1.toString() + sb2.toString() + "нет данных на сайте" +"\n", getOutputSuccessResultFile(), true);
+                        }
+                        for (ResultResult resultResult : resultResults) {
+                            sb2.append(resultResult.getName()).append("~")
+                                    .append(resultResult.getExeProduction()).append("~")
+                                    .append(resultResult.getDetails()).append("~")
+                                    .append(resultResult.getSubject()).append("~")
+                                    .append(resultResult.getDepartment()).append("~")
+                                    .append(resultResult.getBailiff()).append("~")
+                                    .append(resultResult.getIPEnd()).append("\n");
+                            FileUtils.writeFile(sb1.toString() + sb2.toString(), getOutputSuccessResultFile(), true);
+                        }
                     }
                 }
             }
