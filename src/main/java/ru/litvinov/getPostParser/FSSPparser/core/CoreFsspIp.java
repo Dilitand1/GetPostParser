@@ -57,7 +57,7 @@ public class CoreFsspIp extends CoreFssp {
 
     //Обрабатываем результаты
     //выходной файл
-    //uuid;status;code;exception;queryType;responseStatus;numIp;errorMessage;ExeProduction;Details;Subject;Department;Bailiff;IPEnd
+    //uuid;Дата запроса;status;code;exception;queryType;responseStatus;numIp;errorMessage;name;ExeProduction;Details;Subject;Department;Bailiff;IPEnd
     public void resultProcessor(String uuid, GetResult result) {
         StringBuilder sb1 = new StringBuilder();
         sb1.append(uuid).append("~").append(new SimpleDateFormat("dd.MM.yyyy").format(new Date())).append("~")
@@ -72,7 +72,7 @@ public class CoreFsspIp extends CoreFssp {
             //Если в респонзе что то есть то разбираем иначе пишем что пустой ответ
             ResponseResult responseResults[] = result.getResponse().getResult();
             if (responseResults.length == 0) {
-                FileUtils.writeFile(sb1.toString() + "нет данных", getOutputSuccessResultFile(), true);
+                FileUtils.writeFile(sb1.toString() + "нет данных" + "\n", getOutputSuccessResultFile(), true);
             } else {
                 //парсим массив
                 for (ResponseResult responseResult : responseResults) {
@@ -84,7 +84,7 @@ public class CoreFsspIp extends CoreFssp {
                     if (resultUnion.getErrorResult() != null) {
                         //Запрос с ошибкой
                         sb2.append(resultUnion.getErrorResult().getMessage()).append("~");
-                        FileUtils.writeFile(sb1.toString() + sb2.toString(), getOutputSuccessResultFile(), true);
+                        FileUtils.writeFile(sb1.toString() + sb2.toString() + "\n", getOutputSuccessResultFile(), true);
                     } else {
                         ResultResult resultResults[] = resultUnion.getSuccessResult();
                         sb2.append("~");//пустая колонка для ошибки
