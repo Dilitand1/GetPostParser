@@ -1,4 +1,4 @@
-package ru.litvinov.getPostParser.FSSPparser.core;
+package ru.litvinov.getPostParser.FSSPparser.core.logic;
 
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
 

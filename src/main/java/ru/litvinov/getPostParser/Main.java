@@ -21,9 +21,7 @@ public class Main {
     private static String outputSuccessFile = "outputSuccessFile.txt";
 
     public static void main(String[] args) throws Exception {
-        String s = FileUtils.readFile("json2.txt");
-        GetResult getResult = (GetResult) JsonUtils.jsonToObject(s, GetResult.class);
-        System.out.println(getResult.getStatus());
+
     }
 
 }

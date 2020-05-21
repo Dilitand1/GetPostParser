@@ -1,18 +1,12 @@
-package ru.litvinov.getPostParser.FSSPparser.core;
+package ru.litvinov.getPostParser.FSSPparser.core.cores;
 
-import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
-import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
+import ru.litvinov.getPostParser.FSSPparser.core.cache.CacheWork;
+import ru.litvinov.getPostParser.FSSPparser.core.logic.Logic;
 import ru.litvinov.getPostParser.FSSPparser.models.result.GetResult;
-import ru.litvinov.getPostParser.FSSPparser.models.result.Response;
-import ru.litvinov.getPostParser.FSSPparser.models.result.ResponseResult;
-import ru.litvinov.getPostParser.FSSPparser.models.result.ResultResult;
-import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +21,6 @@ public abstract class CoreFssp {
     private CacheWork cacheWork;
 
     public CoreFssp() {
-
     }
 
     public CoreFssp(String token, Logic logic) {

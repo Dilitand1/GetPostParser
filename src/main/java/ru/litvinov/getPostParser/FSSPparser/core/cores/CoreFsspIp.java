@@ -1,5 +1,7 @@
-package ru.litvinov.getPostParser.FSSPparser.core;
+package ru.litvinov.getPostParser.FSSPparser.core.cores;
 
+import ru.litvinov.getPostParser.FSSPparser.core.cache.CacheWorkerIp;
+import ru.litvinov.getPostParser.FSSPparser.core.logic.Logic;
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.ParamsIp;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
