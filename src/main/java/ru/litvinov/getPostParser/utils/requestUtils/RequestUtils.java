@@ -11,7 +11,7 @@ import java.util.Map;
 public class RequestUtils {
 
     //get
-    public static String getRequest(String query) throws Exception {
+    public static String getRequest(String query, Map headers) throws Exception {
         HttpURLConnection connection = null;
         StringBuilder builder = new StringBuilder();
         try {
@@ -22,7 +22,16 @@ public class RequestUtils {
             connection.setConnectTimeout(1500); //задаем таймауты
             connection.setReadTimeout(1500);
 
+            //Пример хедеров
             //connection.setRequestProperty("Content-Language", "en-US"); //пример хеадеров
+            //connection.setRequestProperty("Cookie","JSESSIONID=412364AA14H155125D125XSW1512");
+            if (!headers.isEmpty()) {
+                Iterator<Map.Entry<String, String>> iterator = headers.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, String> entry = iterator.next();
+                    connection.setRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
 
             if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
                 //получаем ответ
@@ -44,12 +53,12 @@ public class RequestUtils {
     public static String postRequest(String myUrl, String body, Map<String, String> headers) throws Exception {
         try {
             URL url = new URL(myUrl); // here is your URL path
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection(); //открываем коннект
-            conn.setReadTimeout(15000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("POST");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //открываем коннект
+            connection.setReadTimeout(15000 /* milliseconds */);
+            connection.setConnectTimeout(15000 /* milliseconds */);
+            connection.setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
 
             //наполняем хэдеры
             //пример создания хэдеров:
@@ -59,12 +68,12 @@ public class RequestUtils {
                 Iterator<Map.Entry<String, String>> iterator = headers.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<String, String> entry = iterator.next();
-                    conn.setRequestProperty(entry.getKey(), entry.getValue());
+                    connection.setRequestProperty(entry.getKey(), entry.getValue());
                 }
             }
 
             //грузим тело запроса
-            try (OutputStream os = conn.getOutputStream();
+            try (OutputStream os = connection.getOutputStream();
                  BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));) {
                 //byte[] input = body.getBytes("utf-8");
                 //os.write(input, 0, input.length);
@@ -73,9 +82,9 @@ public class RequestUtils {
             }
 
             //получаем ответ
-            int responseCode = conn.getResponseCode();
+            int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));) {
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));) {
                     StringBuffer sb = new StringBuffer("");
                     String line = "";
                     while ((line = in.readLine()) != null) {
@@ -84,7 +93,7 @@ public class RequestUtils {
                     return sb.toString();
                 }
             } else {
-                throw new Exception(conn.getResponseCode() + "\n" + conn.getResponseMessage() + "\n" + body);
+                throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + body);
             }
         } catch (IOException e) {
             e.printStackTrace();

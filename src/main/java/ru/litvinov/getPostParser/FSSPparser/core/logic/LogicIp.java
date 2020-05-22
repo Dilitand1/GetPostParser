@@ -8,6 +8,7 @@ import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 import ru.litvinov.getPostParser.utils.requestUtils.RequestUtils;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class LogicIp implements Logic {
     @Override
     public GetResponse sendGet(String numip, String token) throws Exception {
         String s = String.format("https://api-ip.fssprus.ru/api/v1.0/search/ip?token=%s&number=%s", token, URLEncoder.encode(numip));
-        GetResponse getResponse = (GetResponse) JsonUtils.jsonToObject(RequestUtils.getRequest(s), GetResponse.class);
+        GetResponse getResponse = (GetResponse) JsonUtils.jsonToObject(RequestUtils.getRequest(s,new HashMap()), GetResponse.class);
         return getResponse;
     }
 
@@ -27,7 +28,7 @@ public class LogicIp implements Logic {
 
         GetResult getResult = null;
         try {
-            getResult = (GetResult) JsonUtils.jsonToObject(RequestUtils.getRequest(s), GetResult.class);
+            getResult = (GetResult) JsonUtils.jsonToObject(RequestUtils.getRequest(s,new HashMap()), GetResult.class);
 
         } catch (Exception e){
             System.out.println(e.getMessage().split("\n")[0] + "\t"  + e.getMessage().split("\n")[1]);
