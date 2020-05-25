@@ -5,7 +5,9 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class RequestUtils {
@@ -99,6 +101,38 @@ public class RequestUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //Получаем куки
+    //для передачи добавлеяем пару в хедеры {cookie: куки через точку с запятой + пробел}
+    public static List<HttpCookie> getCookies(String urlAddress){
+        CookieManager cookieManager = new CookieManager();
+        //CookieHandler.setDefault(cookieManager); //по идее после вызова этого метода все запросы будут с куки
+        URL url = null;
+        URLConnection connection = null;
+        List<HttpCookie> cookies = new ArrayList<>();
+        try {
+            url = new URL(urlAddress);
+
+            connection = url.openConnection();
+            connection.getContent();
+
+            cookies = cookieManager.getCookieStore().getCookies();
+
+            for (HttpCookie cookie : cookies) {
+                System.out.println(cookie.getDomain());
+                System.out.println(cookie);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cookies;
+    }
+
+    public static String getStringCookies(String urlAddress){
+         List<HttpCookie> list = getCookies(urlAddress);
+         return list.stream().map(x->x.toString()).reduce((httpCookie, httpCookie2) -> httpCookie + "; " + httpCookie2).get();
     }
 
     /**

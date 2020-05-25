@@ -1,23 +1,21 @@
 package ru.litvinov.getPostParser.notariatParser;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.litvinov.getPostParser.notariatParser.config.NotariatConfigClass;
+import ru.litvinov.getPostParser.notariatParser.core.Core;
+import ru.litvinov.getPostParser.notariatParser.core.CoreImpl;
+import ru.litvinov.getPostParser.utils.requestUtils.RequestUtils;
+
 import java.io.IOException;
-import java.net.*;
 import java.util.List;
 
 public class MainNotariat {
     public static void main(String[] args) throws IOException {
-        CookieManager cookieManager = new CookieManager();
-        CookieHandler.setDefault(cookieManager);
+        List list = RequestUtils.getCookies("https://notariat.ru/ru-ru/help/probate-cases/");
 
-        URL url = new URL("https://notariat.ru/ru-ru/help/probate-cases/");
-
-        URLConnection connection = url.openConnection();
-        connection.getContent();
-
-        List<HttpCookie> cookies = cookieManager.getCookieStore().getCookies();
-        for (HttpCookie cookie : cookies) {
-            System.out.println(cookie.getDomain());
-            System.out.println(cookie);
-        }
+        //AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(NotariatConfigClass.class);
+        //Core core = context.getBean(CoreImpl.class);
+        //String s = core.processor();
+        //System.out.println(s);
     }
 }
