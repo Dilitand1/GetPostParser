@@ -31,4 +31,13 @@ public class Client {
     public void setDeath_date(String death_date) {
         this.death_date = death_date;
     }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "name='" + name + '\'' +
+                ", birth_date='" + birth_date + '\'' +
+                ", death_date='" + death_date + '\'' +
+                '}';
+    }
 }

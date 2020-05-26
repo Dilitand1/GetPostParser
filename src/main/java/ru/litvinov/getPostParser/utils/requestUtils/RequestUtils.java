@@ -2,6 +2,7 @@ package ru.litvinov.getPostParser.utils.requestUtils;
 
 import com.sun.corba.se.impl.presentation.rmi.ExceptionHandler;
 import org.json.JSONObject;
+import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
 
 import java.io.*;
 import java.net.*;
@@ -106,8 +107,17 @@ public class RequestUtils {
         return null;
     }
 
-    //Получаем куки
-    //для передачи добавлеяем пару в хедеры {cookie: куки через точку с запятой + пробел}
+    /**
+     * Получаем куки
+     * для передачи добавлеяем пару в хедеры {Cookie: куки через точку с запятой + пробел}
+     *
+     *         Альтернативный способ через Jsoup:
+     *         String url = "https://notariat.ru//";//"https://www.avito.ru";
+     *         Map<String, String> cookies = Jsoup.connect(url).execute().cookies();
+     *         System.out.println(cookies);
+     */
+    //
+    //
     public static List<HttpCookie> getCookies(String urlAddress){
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
@@ -116,16 +126,13 @@ public class RequestUtils {
         List<HttpCookie> cookies = new ArrayList<>();
         try {
             url = new URL(urlAddress);
-
             connection = url.openConnection();
             connection.getContent();
-
             cookies = cookieManager.getCookieStore().getCookies();
 
-            for (HttpCookie cookie : cookies) {
-                System.out.println(cookie);
-            }
-
+//            for (HttpCookie cookie : cookies) {
+//                System.out.println(cookie);
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
