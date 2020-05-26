@@ -27,7 +27,7 @@ public class CoreImpl implements Core {
     @PostConstruct
     public void init(){
         //Загружаем куки и дописываем хедеры при иницииализации
-
+        /*
         List<HttpCookie> cookies = RequestUtils.getCookies(url);
         StringBuilder builder = new StringBuilder();
         if (!cookies.isEmpty()) {
@@ -42,13 +42,17 @@ public class CoreImpl implements Core {
             String cookie = builder.toString();
             headers.put("Cookie",cookie.substring(0,cookie.length()-2));
         }
+
+         */
     }
 
     public String processor(){
         Client client = new Client();
-        client.setName("ШИРЯЕВА СОНИЯ АРИФОВНА");
-        client.setBirth_date("19610831");
-        client.setDeath_date("20180313");
+        client.setName("ИВАНОВ ИВАН ИВАНОВИЧ");
+//        client.setBirth_date("19610831");
+//        client.setDeath_date("20180313");
+        client.setBirth_date("null");
+        client.setDeath_date("null");
         String body = JsonUtils.objectToJson(client);
         headers.put("Content-Length",String.valueOf(body.length()));
         return sendPost(JsonUtils.objectToJson(client));

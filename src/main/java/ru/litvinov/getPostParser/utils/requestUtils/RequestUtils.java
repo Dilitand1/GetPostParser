@@ -5,12 +5,15 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class RequestUtils {
+
+    String charset;
 
     //get
     public static String getRequest(String query, Map headers) throws Exception {
@@ -76,7 +79,7 @@ public class RequestUtils {
 
             //грузим тело запроса
             try (OutputStream os = connection.getOutputStream();
-                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));) {
+                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));) {
                 //byte[] input = body.getBytes("utf-8");
                 //os.write(input, 0, input.length);
                 writer.write(body);
@@ -107,7 +110,7 @@ public class RequestUtils {
     //для передачи добавлеяем пару в хедеры {cookie: куки через точку с запятой + пробел}
     public static List<HttpCookie> getCookies(String urlAddress){
         CookieManager cookieManager = new CookieManager();
-        //CookieHandler.setDefault(cookieManager); //по идее после вызова этого метода все запросы будут с куки
+        CookieHandler.setDefault(cookieManager);
         URL url = null;
         URLConnection connection = null;
         List<HttpCookie> cookies = new ArrayList<>();
@@ -120,7 +123,6 @@ public class RequestUtils {
             cookies = cookieManager.getCookieStore().getCookies();
 
             for (HttpCookie cookie : cookies) {
-                System.out.println(cookie.getDomain());
                 System.out.println(cookie);
             }
 
