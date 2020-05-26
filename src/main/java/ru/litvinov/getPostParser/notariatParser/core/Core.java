@@ -7,6 +7,8 @@ import java.util.Map;
 public interface Core {
 
     public String sendPost(String body);
+
     public void processor();
+
     public Map getHeaders();
 }

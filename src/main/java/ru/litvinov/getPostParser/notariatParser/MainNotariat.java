@@ -10,13 +10,15 @@ import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 
 import java.io.*;
 
+/**
+ * В файл notariatInputFile.txt пишем клиентов в формате:
+ * ФИО;ДР;Дата смерти
+ * Каждый клиент в новой строке
+ */
 public class MainNotariat {
     public static void main(String[] args) throws IOException {
-//{"name":"ИВАНОВ ИВАН ИВАНОВИЧ","birth_date":"null","death_date":"null"}
-
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(NotariatConfigClass.class);
         Core core = context.getBean(CoreImpl.class);
         core.processor();
     }
-
 }

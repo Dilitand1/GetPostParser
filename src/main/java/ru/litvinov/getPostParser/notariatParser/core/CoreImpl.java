@@ -27,16 +27,19 @@ public class CoreImpl implements Core {
     private String url;
     @Autowired
     @Qualifier("headers")
-    private Map<String,String> headers;
+    private Map<String, String> headers;
     @Value("${notariat.filePath}")
     private String inputFile;
     private String outputFile = "notariatOutput.txt";
     private List<Client> clients = new ArrayList<>();
 
-    public CoreImpl(){};
+    public CoreImpl() {
+    }
+
+    ;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         if (!Files.exists(Paths.get(inputFile))) {
             System.out.println("отсутствует файл завершаем работу программы");
             System.exit(0);
@@ -50,41 +53,45 @@ public class CoreImpl implements Core {
         getCookies();
     }
 
-    public void processor(){
+    public void processor() {
+        System.out.println("Парсим сайт");
         int counter = 0;
-        for (Client client : clients){
+        for (Client client : clients) {
             String resultString = sendPost(JsonUtils.objectToJson(client));
-            GetResult result = (GetResult) JsonUtils.jsonToObject(resultString,GetResult.class);
-            FileUtils.writeFile(resultProcessor(client,result),outputFile,true);
+            GetResult result = (GetResult) JsonUtils.jsonToObject(resultString, GetResult.class);
+            FileUtils.writeFile(resultProcessor(client, result), outputFile, true);
             System.out.println("Загружено " + ++counter + " из " + clients.size());
         }
+        System.out.println("Загрузка завершена");
     }
 
-    public void getCookies(){
+    public void getCookies() {
         //Загружаем куки и дописываем хедеры при иницииализации
+        System.out.print("грузим куки");
         List<HttpCookie> cookies = RequestUtils.getCookies(url);
         String token = "";
         String cookieString = "";
         StringBuilder builder = new StringBuilder();
         if (!cookies.isEmpty()) {
-            for (HttpCookie cookie : cookies){
+            for (HttpCookie cookie : cookies) {
                 String tmp = cookie.toString();
-                if (tmp.startsWith("fnc_csrftoken")){
+                if (tmp.startsWith("fnc_csrftoken")) {
                     token = tmp.split("=")[1];
                 }
                 cookieString += tmp + "; ";
             }
             //Если в куках был токен
-            if (token.length() > 0){
+            if (token.length() > 0) {
                 System.out.println("найдены новые куки перезаписываем");
-                headers.put("X-CSRFToken",token);
-                headers.put("Cookie",cookieString.substring(0,cookieString.length()-2));
+                headers.put("X-CSRFToken", token);
+                headers.put("Cookie", cookieString.substring(0, cookieString.length() - 2));
                 //перезаписываем проперти
                 String newProperties = "notariat.Cookie = " + cookieString + "\n" + "notariat.X-CSRFToken = " + token + "\n" + "notariat.filePath = " + inputFile;
-                FileUtils.writeFile(newProperties,"src\\main\\resources\\notariat.properties",false);
+                FileUtils.writeFile(newProperties, "src\\main\\resources\\notariat.properties", false);
             }
+            System.out.println(" - ок");
             try {
-                System.out.println("Спим 3 секунды");
+                System.out.println("Пауза 3 секунды");
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -93,8 +100,9 @@ public class CoreImpl implements Core {
     }
 
     public void loadClients() throws IOException {
+        System.out.print("Загружаем клиентов из файла");
         List<String> list = Files.readAllLines(Paths.get(inputFile));
-        for (String s : list){
+        for (String s : list) {
             String[] tmp = s.split(";");
             Client client = new Client();
             client.setName(tmp[0]);
@@ -102,6 +110,7 @@ public class CoreImpl implements Core {
             client.setDeath_date(tmp[2].split("\\.")[2] + tmp[2].split("\\.")[1] + tmp[2].split("\\.")[0]);
             clients.add(client);
         }
+        System.out.println(" - ок");
         //System.out.println(clients);
     }
 
@@ -111,9 +120,9 @@ public class CoreImpl implements Core {
         try {
             s = RequestUtils.postRequest(url, body, headers);
         } catch (Exception e) {
-            if (e.getMessage().contains("Service Temporarily Unavailable")){
+            if (e.getMessage().contains("Service Temporarily Unavailable")) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                     s = sendPost(body);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
@@ -127,15 +136,15 @@ public class CoreImpl implements Core {
 
     //Шапка для будущего файла
     //ФИО~ДР~Дата смерти~Количество записей~deathActDate~deathActNumber~address~caseIndex~caseNumber~caseDate~caseCloseDate~notaryID~notaryName~notaryStatus~districtName~contactName~contactAddress~contactPhone~chamberID~chamberName~caseID~caseIDDate
-    public String resultProcessor(Client client, GetResult result){
+    public String resultProcessor(Client client, GetResult result) {
         StringBuilder sb = new StringBuilder();
         StringBuilder resultSb = new StringBuilder();
         sb.append(client.getName()).append("~")
-                .append(client.getBirth_date().substring(0,4) + "." + client.getBirth_date().substring(4,6) + "." + client.getBirth_date().substring(6,8)).append("~")
-                .append(client.getDeath_date().substring(0,4) + "." + client.getDeath_date().substring(4,6) + "." + client.getDeath_date().substring(6,8)).append("~")
+                .append(client.getBirth_date().substring(0, 4) + "." + client.getBirth_date().substring(4, 6) + "." + client.getBirth_date().substring(6, 8)).append("~")
+                .append(client.getDeath_date().substring(0, 4) + "." + client.getDeath_date().substring(4, 6) + "." + client.getDeath_date().substring(6, 8)).append("~")
                 .append(result.getCount()).append("~");
-        if (result.getCount() == 0L){
-            return sb.toString() + "информация не найдена + \n";
+        if (result.getCount() == 0L) {
+            return sb.toString() + "информация не найдена \n";
         } else {
             Record[] records = result.getRecords();
             for (Record record : records) {
