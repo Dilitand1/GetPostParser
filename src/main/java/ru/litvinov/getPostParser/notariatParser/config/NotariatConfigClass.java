@@ -4,8 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 @Configuration
 @ComponentScans(@ComponentScan("ru.litvinov.getPostParser.notariatParser"))
@@ -17,7 +22,6 @@ public class NotariatConfigClass {
 
     @Bean(name = "headers")
     public Map<String,String> headersBean(){
-
         Map<String,String> map = new LinkedHashMap<>();
         map.put("Host","notariat.ru");
         map.put("Connection","keep-alive");
@@ -39,5 +43,20 @@ public class NotariatConfigClass {
         map.put("Cookie",environment.getProperty("notariat.Cookie"));//куки получим перед входом
         //map.put("Cookie","fnc_csrftoken=ApMvn8liRxVhlwUdzXgWxJ9hU0Hojory; django_language=ru-ru");
         return map;
+    }
+
+    @Bean
+    public Logger loggerBean() throws IOException {
+        Logger logger = Logger.getLogger(NotariatConfigClass.class.getName());
+        String loggerProperties = "handlers = java.util.logging.FileHandler, java.util.logging.ConsoleHandler\n" +
+                "java.util.logging.ConsoleHandler.level     = INFO\n" +
+                "java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter" +
+                "java.util.logging.FileHandler.level     = INFO\n" +
+                "java.util.logging.FileHandler.formatter = java.util.logging.SimpleFormatter\n" +
+                "java.util.logging.FileHandler.append    = true\n" +
+                "java.util.logging.FileHandler.pattern   = log.txt\n";
+        logger.addHandler(new FileHandler("log.txt"));
+        LogManager.getLogManager().readConfiguration(new ByteArrayInputStream(loggerProperties.getBytes()));
+        return logger;
     }
 }

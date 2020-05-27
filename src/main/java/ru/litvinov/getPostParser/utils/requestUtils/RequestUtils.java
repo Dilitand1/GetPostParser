@@ -102,9 +102,8 @@ public class RequestUtils {
                 throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + body);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
-        return null;
     }
 
     /**
