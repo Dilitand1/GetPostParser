@@ -4,9 +4,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import ru.litvinov.getPostParser.notariatParser.config.NotariatConfigClass;
 import ru.litvinov.getPostParser.notariatParser.core.Core;
 import ru.litvinov.getPostParser.notariatParser.core.CoreImpl;
-import ru.litvinov.getPostParser.notariatParser.models.result.GetResult;
-import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
-import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 
 import java.io.*;
 

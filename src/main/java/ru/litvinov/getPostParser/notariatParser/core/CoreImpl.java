@@ -112,10 +112,10 @@ public class CoreImpl implements Core {
         for (String s : list) {
             String[] tmp = s.split(";");
             Client client = new Client();
-            client.setName(tmp[0]);
+            client.setName(tmp[0].replaceAll("\\uFEFF",""));
             client.setBirth_date(tmp[1].split("\\.")[2] + tmp[1].split("\\.")[1] + tmp[1].split("\\.")[0]);
-            if (tmp[2].equals("") || tmp[2].equals("null")) {
-                client.setDeath_date("null");
+            if (tmp[2].equals("") || tmp[2].toUpperCase().equals("NULL")) {
+                client.setDeath_date("NULL");
             } else {
                 client.setDeath_date(tmp[2].split("\\.")[2] + tmp[2].split("\\.")[1] + tmp[2].split("\\.")[0]);
             }
@@ -159,8 +159,8 @@ public class CoreImpl implements Core {
         StringBuilder resultSb = new StringBuilder();
         sb.append(client.getName()).append("~").append(client.getBirth_date().substring(6, 8) + "." + client.getBirth_date().substring(4, 6) + "." + client.getBirth_date().substring(0, 4)).append("~");
         //Обработчик если нуль
-        if (client.getDeath_date().equals("null")){
-            sb.append("null").append("~");
+        if (client.getDeath_date().toUpperCase().equals("NULL")){
+            sb.append("NULL").append("~");
         } else {
             sb.append(client.getDeath_date().substring(0, 4) + "." + client.getDeath_date().substring(4, 6) + "." + client.getDeath_date().substring(6, 8)).append("~");
         }
@@ -210,5 +210,37 @@ public class CoreImpl implements Core {
 
     public void setHeaders(Map headers) {
         this.headers = headers;
+    }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+    public String getInputFile() {
+        return inputFile;
+    }
+
+    public void setInputFile(String inputFile) {
+        this.inputFile = inputFile;
+    }
+
+    public String getOutputFile() {
+        return outputFile;
+    }
+
+    public void setOutputFile(String outputFile) {
+        this.outputFile = outputFile;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
     }
 }
