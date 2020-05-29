@@ -37,6 +37,7 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
             if (creationDate.getTime() < (new Date().getTime() - (22 * 60 * 60 * 1000)) /*yeasterday.getTime().getTime()*/) {
                 System.out.println("Кэш устарел");
                 FileUtils.renameFile(casheFile,"old" + casheFile);
+                FileUtils.removeFile(casheFile);
                 throw new IOException("Кэш устарел");
             }
             //Реализация без сериализации

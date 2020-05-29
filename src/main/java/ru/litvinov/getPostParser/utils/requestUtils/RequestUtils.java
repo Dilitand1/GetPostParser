@@ -1,9 +1,5 @@
 package ru.litvinov.getPostParser.utils.requestUtils;
 
-import com.sun.corba.se.impl.presentation.rmi.ExceptionHandler;
-import org.json.JSONObject;
-import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
-
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -17,11 +13,11 @@ public class RequestUtils {
     String charset;
 
     //get
-    public static String getRequest(String query, Map headers) throws Exception {
+    public static String getRequest(String query, Proxy proxy, Map headers) throws Exception {
         HttpURLConnection connection = null;
         StringBuilder builder = new StringBuilder();
         try {
-            connection = (HttpURLConnection) new URL(query).openConnection();
+            connection = (HttpURLConnection) new URL(query).openConnection(proxy);
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setRequestMethod("GET"); //Задаем тип запроса
@@ -55,11 +51,22 @@ public class RequestUtils {
         return builder.toString();
     }
 
+    /**
+     * гет без прокси
+     * @param query - строка запроса
+     * @param headers - хедеры прикпленные к запросу
+     * @return - строка  респонза
+     * @throws Exception
+     */
+    public static String getRequest(String query, Map headers) throws Exception {
+        return getRequest(query,Proxy.NO_PROXY,headers);
+    }
+
     //post
-    public static String postRequest(String myUrl, String body, Map<String, String> headers) throws Exception {
+    public static String postRequest(String myUrl, Proxy proxy, String body, Map<String, String> headers) throws Exception {
         try {
             URL url = new URL(myUrl); // here is your URL path
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection(); //открываем коннект
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy); //открываем коннект
             connection.setReadTimeout(15000 /* milliseconds */);
             connection.setConnectTimeout(15000 /* milliseconds */);
             connection.setRequestMethod("POST");
@@ -104,6 +111,13 @@ public class RequestUtils {
         } catch (IOException e) {
             throw e;
         }
+    }
+
+    /**
+     * post without proxy
+     */
+    public static String postRequest(String myUrl, String body, Map<String, String> headers) throws Exception {
+        return postRequest(myUrl,Proxy.NO_PROXY,body,headers);
     }
 
     /**
