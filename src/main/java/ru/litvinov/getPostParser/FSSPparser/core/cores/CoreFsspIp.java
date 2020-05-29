@@ -66,7 +66,6 @@ public class CoreFsspIp extends CoreFssp {
                 .append(result.getStatus()).append("~")
                 .append(result.getCode()).append("~")
                 .append(result.getException()).append("~");
-        System.out.println(result.getResponse().getStatus());
         if (!result.getStatus().equals("success")) {
             //Если результат не успешный то сразу пишем в ошибки
             FileUtils.writeFile(sb1.toString() + result.getResponse().getStatus() + "\n", getOutputFailedResultFile(), true);
@@ -101,8 +100,8 @@ public class CoreFsspIp extends CoreFssp {
                                     .append(resultResult.getSubject()).append("~")
                                     .append(resultResult.getDepartment()).append("~")
                                     .append(resultResult.getBailiff()).append("~")
-                                    .append(resultResult.getIPEnd()).append("\n");
-                            FileUtils.writeFile(sb1.toString() + sb2.toString(), getOutputSuccessResultFile(), true);
+                                    .append(resultResult.getIPEnd());
+                            FileUtils.writeFile(sb1.toString().replaceAll("\n","") + sb2.toString().replaceAll("\n","") + "\n", getOutputSuccessResultFile(), true);
                         }
                     }
                 }

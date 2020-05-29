@@ -49,10 +49,10 @@ public abstract class CoreFssp {
             GetResult getResult = (GetResult) logic.takeResult(inputList.get(i), token);
             resultList.add(getResult);
             resultProcessor(inputList.get(i),getResult);//обработка результата
+            System.out.println("Обработано " + (i + 1) + " из " + inputList.size());
         }
         return resultList;
     }
-
 
 
     public String getToken() {
