@@ -46,7 +46,7 @@ public class CoreFsspIp extends CoreFssp {
             for (int j = i * 50; j < inputList.size() && counter != 50; j++, counter++) {
                 Request request1 = new Request();
                 ParamsIp paramsIp = new ParamsIp();
-                paramsIp.setNumber(inputList.get(j).toString());
+                paramsIp.setNumber(inputList.get(j).toString().trim());
                 request1.setType(3);
                 request1.setParams(paramsIp);
                 requests.add(request1);

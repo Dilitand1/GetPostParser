@@ -44,12 +44,10 @@ public class CoreImpl implements Core {
     public CoreImpl() {
     }
 
-    ;
-
     @PostConstruct
     public void init() {
         if (!Files.exists(Paths.get(inputFile))) {
-            logger.log(Level.WARNING,"отсутствует файл завершаем работу программы");
+            logger.log(Level.WARNING, "отсутствует файл завершаем работу программы");
             System.exit(0);
         } else {
             try {
@@ -62,7 +60,7 @@ public class CoreImpl implements Core {
     }
 
     public void processor() {
-        logger.log(Level.INFO,"Парсим сайт");
+        logger.log(Level.INFO, "Парсим сайт");
         int counter = 0;
         for (Client client : clients) {
             String resultString = sendPost(JsonUtils.objectToJson(client));
@@ -70,12 +68,12 @@ public class CoreImpl implements Core {
             FileUtils.writeFile(resultProcessor(client, result), outputFile, true);
             System.out.println("Загружено " + ++counter + " из " + clients.size());
         }
-        logger.log(Level.INFO,"Загрузка завершена");
+        logger.log(Level.INFO, "Загрузка завершена");
     }
 
     public void getCookies() {
         //Загружаем куки и дописываем хедеры при иницииализации
-        logger.log(Level.INFO,"Загрузка Cookie");
+        logger.log(Level.INFO, "Загрузка Cookie");
         List<HttpCookie> cookies = RequestUtils.getCookies(url);
         String token = "";
         String cookieString = "";
@@ -90,7 +88,7 @@ public class CoreImpl implements Core {
             }
             //Если в куках был токен
             if (token.length() > 0) {
-                logger.log(Level.INFO,"Найдены новые куки перезаписываем");
+                logger.log(Level.INFO, "Найдены новые куки перезаписываем");
                 headers.put("X-CSRFToken", token);
                 headers.put("Cookie", cookieString.substring(0, cookieString.length() - 2));
                 //перезаписываем проперти
@@ -107,12 +105,12 @@ public class CoreImpl implements Core {
     }
 
     public void loadClients() throws IOException {
-        logger.log(Level.INFO,"Загружаем клиентов из файла");
+        logger.log(Level.INFO, "Загружаем клиентов из файла");
         List<String> list = Files.readAllLines(Paths.get(inputFile));
         for (String s : list) {
             String[] tmp = s.split(";");
             Client client = new Client();
-            client.setName(tmp[0].replaceAll("\\uFEFF",""));
+            client.setName(tmp[0].replaceAll("\\uFEFF", ""));
             client.setBirth_date(tmp[1].split("\\.")[2] + tmp[1].split("\\.")[1] + tmp[1].split("\\.")[0]);
             if (tmp[2].equals("") || tmp[2].toUpperCase().equals("NULL")) {
                 client.setDeath_date("NULL");
@@ -159,7 +157,7 @@ public class CoreImpl implements Core {
         StringBuilder resultSb = new StringBuilder();
         sb.append(client.getName()).append("~").append(client.getBirth_date().substring(6, 8) + "." + client.getBirth_date().substring(4, 6) + "." + client.getBirth_date().substring(0, 4)).append("~");
         //Обработчик если нуль
-        if (client.getDeath_date().toUpperCase().equals("NULL")){
+        if (client.getDeath_date().toUpperCase().equals("NULL")) {
             sb.append("NULL").append("~");
         } else {
             sb.append(client.getDeath_date().substring(0, 4) + "." + client.getDeath_date().substring(4, 6) + "." + client.getDeath_date().substring(6, 8)).append("~");
@@ -190,7 +188,7 @@ public class CoreImpl implements Core {
                         .append(record.getChamberName()).append("~")
                         .append(record.getCaseID()).append("~")
                         .append(record.getCaseIDDate());
-                resultSb.append(sb.toString().replaceAll("\n"," ") + secondSb.toString().replaceAll("\n"," ") + "\n");
+                resultSb.append(sb.toString().replaceAll("\n", " ") + secondSb.toString().replaceAll("\n", " ") + "\n");
             }
         }
         return resultSb.toString();
