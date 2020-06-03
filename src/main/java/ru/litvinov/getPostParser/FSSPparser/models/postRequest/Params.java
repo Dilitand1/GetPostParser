@@ -48,8 +48,8 @@ public class Params {
         return  (firstname == null ? "" : firstname) + "~" +
                 (lastname == null ? "" : lastname) + "~" +
                 (secondname == null ? "" : secondname) + "~" +
-                (region == null ? "" : region) + "~" +
                 (birthdate == null ? "" : birthdate) + "~" +
+                (region == null ? "" : region) + "~" +
                 (number == null ? "" : number);
     }
 }

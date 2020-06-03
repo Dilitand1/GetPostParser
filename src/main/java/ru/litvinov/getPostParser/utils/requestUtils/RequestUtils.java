@@ -43,7 +43,9 @@ public class RequestUtils {
                     builder.append(line);
                 }
             } else {
-                throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + query);
+                byte[] bytes = new byte[connection.getErrorStream().available()];
+                connection.getErrorStream().read(bytes);
+                throw new RequestException(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + query, new String(bytes));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,13 +55,14 @@ public class RequestUtils {
 
     /**
      * гет без прокси
-     * @param query - строка запроса
+     *
+     * @param query   - строка запроса
      * @param headers - хедеры прикпленные к запросу
      * @return - строка  респонза
      * @throws Exception
      */
     public static String getRequest(String query, Map headers) throws Exception {
-        return getRequest(query,Proxy.NO_PROXY,headers);
+        return getRequest(query, Proxy.NO_PROXY, headers);
     }
 
     //post
@@ -84,7 +87,6 @@ public class RequestUtils {
                     connection.setRequestProperty(entry.getKey(), entry.getValue());
                 }
             }
-
             //грузим тело запроса
             try (OutputStream os = connection.getOutputStream();
                  BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));) {
@@ -93,12 +95,12 @@ public class RequestUtils {
                 writer.write(body);
                 writer.flush();
             }
-
-            //получаем ответ
+            //Получаем ответ
             int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
+                //получаем ответ
+                StringBuffer sb = new StringBuffer();
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));) {
-                    StringBuffer sb = new StringBuffer("");
                     String line = "";
                     while ((line = in.readLine()) != null) {
                         sb.append(line);
@@ -106,7 +108,10 @@ public class RequestUtils {
                     return sb.toString();
                 }
             } else {
-                throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + body);
+                byte[] bytes = new byte[connection.getErrorStream().available()];
+                connection.getErrorStream().read(bytes);
+                throw new RequestException(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n", new String(bytes));
+                //throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + body);
             }
         } catch (IOException e) {
             throw e;
@@ -117,21 +122,21 @@ public class RequestUtils {
      * post without proxy
      */
     public static String postRequest(String myUrl, String body, Map<String, String> headers) throws Exception {
-        return postRequest(myUrl,Proxy.NO_PROXY,body,headers);
+        return postRequest(myUrl, Proxy.NO_PROXY, body, headers);
     }
 
     /**
      * Получаем куки
      * для передачи добавлеяем пару в хедеры {Cookie: куки через точку с запятой + пробел}
-     *
-     *         Альтернативный способ через Jsoup:
-     *         String url = "https://notariat.ru//";//"https://www.avito.ru";
-     *         Map<String, String> cookies = Jsoup.connect(url).execute().cookies();
-     *         System.out.println(cookies);
+     * <p>
+     * Альтернативный способ через Jsoup:
+     * String url = "https://notariat.ru//";//"https://www.avito.ru";
+     * Map<String, String> cookies = Jsoup.connect(url).execute().cookies();
+     * System.out.println(cookies);
      */
     //
     //
-    public static List<HttpCookie> getCookies(String urlAddress){
+    public static List<HttpCookie> getCookies(String urlAddress) {
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
         URL url = null;
@@ -152,13 +157,14 @@ public class RequestUtils {
         return cookies;
     }
 
-    public static String getStringCookies(String urlAddress){
-         List<HttpCookie> list = getCookies(urlAddress);
-         return list.stream().map(x->x.toString()).reduce((httpCookie, httpCookie2) -> httpCookie + "; " + httpCookie2).get();
+    public static String getStringCookies(String urlAddress) {
+        List<HttpCookie> list = getCookies(urlAddress);
+        return list.stream().map(x -> x.toString()).reduce((httpCookie, httpCookie2) -> httpCookie + "; " + httpCookie2).get();
     }
 
     /**
      * Преобразует строку в специальный формат для отправки url
+     *
      * @param s
      * @return
      * @throws MalformedURLException

@@ -83,7 +83,6 @@ public abstract class CoreFssp {
                 getCacheWork().saveCasheToFile(getOutputTaskFile());
             }
         }
-
     }
 
     //Обрабатываем результаты

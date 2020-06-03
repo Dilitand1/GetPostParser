@@ -8,10 +8,7 @@ import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 import ru.litvinov.getPostParser.utils.requestUtils.RequestUtils;
 
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LogicIp implements Logic {
 
@@ -61,7 +58,8 @@ public class LogicIp implements Logic {
             Thread.sleep(5000); //спим 5 секунд
         } catch (Exception e) {
             //если косяк то обрабатываем ошибку
-            System.out.println(e.getMessage().split("\n")[0] + "\t"  + e.getMessage().split("\n")[1]);
+            String[] splitMessage = e.getMessage().split("\n");
+            Arrays.stream(splitMessage).limit(2).forEach(x-> System.out.print(x + "\t"));
             if (e.getMessage().contains("Too Many")) {
                 //Если много запросов то ждем 30 сек
                 System.out.println("Много запросов спим 1 минуту");

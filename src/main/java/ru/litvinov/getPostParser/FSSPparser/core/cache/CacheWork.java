@@ -39,7 +39,6 @@ public abstract class CacheWork implements Serializable {
         }
     }
 
-
     public String getCasheFile() {
         return casheFile;
     }
