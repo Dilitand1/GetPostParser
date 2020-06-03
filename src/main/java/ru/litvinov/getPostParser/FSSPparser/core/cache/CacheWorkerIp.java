@@ -70,9 +70,9 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
         List<Request> requests = postRequest.getRequest();
 
         for (int i = 0; i < requests.size(); i++) {
-            String requestIp = requests.get(i).getParams().getNumber();
-            if (cacheMap.get(requestIp) == null || !cacheMap.get(requestIp).getStatus().equals("success")) {
-                cacheMap.put(requestIp, getResponse);
+            String request = requests.get(i).getParams().toString();
+            if (cacheMap.get(request) == null || !cacheMap.get(request).getStatus().equals("success")) {
+                cacheMap.put(request, getResponse);
             }
         }
     }

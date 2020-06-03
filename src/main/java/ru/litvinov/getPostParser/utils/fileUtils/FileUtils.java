@@ -77,8 +77,10 @@ public class FileUtils {
     }
 
     public static synchronized void removeFile(String fileName){
-        if (fileExists(fileName))
+        if (fileExists(fileName)) {
+            //System.out.println("deleting " + fileName);
             new File(fileName).delete();
+        }
     }
 
     public static synchronized void renameFile(String oldFilename, String newFilename){
