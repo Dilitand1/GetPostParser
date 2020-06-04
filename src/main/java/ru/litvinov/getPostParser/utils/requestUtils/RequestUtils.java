@@ -108,6 +108,7 @@ public class RequestUtils {
                     return sb.toString();
                 }
             } else {
+                //пишем тело запроса в байтыё
                 byte[] bytes = new byte[connection.getErrorStream().available()];
                 connection.getErrorStream().read(bytes);
                 throw new RequestException(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n", new String(bytes));

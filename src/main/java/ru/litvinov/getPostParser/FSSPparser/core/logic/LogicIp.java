@@ -25,6 +25,7 @@ public class LogicIp implements Logic {
 
         GetResult getResult = null;
         try {
+            Thread.sleep(100);
             getResult = (GetResult) JsonUtils.jsonToObject(RequestUtils.getRequest(s,new HashMap()), GetResult.class);
 
         } catch (Exception e){
