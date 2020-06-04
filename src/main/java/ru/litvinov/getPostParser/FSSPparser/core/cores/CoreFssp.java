@@ -3,6 +3,7 @@ package ru.litvinov.getPostParser.FSSPparser.core.cores;
 import ru.litvinov.getPostParser.FSSPparser.core.cache.CacheWork;
 import ru.litvinov.getPostParser.FSSPparser.core.logic.Logic;
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
+import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Params;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
 import ru.litvinov.getPostParser.FSSPparser.models.result.GetResult;
 import ru.litvinov.getPostParser.FSSPparser.models.result.ResponseResult;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class CoreFssp {
@@ -64,11 +66,7 @@ public abstract class CoreFssp {
 
     public void sendPosts() throws Exception {
         List<String> listOfIpOrClients = Files.readAllLines(Paths.get(getInputFile())); //грузим все строки
-
-        boolean isDeleted = listOfIpOrClients.removeAll(getCacheWork().getCacheMap().keySet());//удаляем из списка то что уже загружено
-        if (isDeleted)
-            System.out.println("Найдена информация в кэше, к загрузке " + listOfIpOrClients.size());
-
+        deleteCache(listOfIpOrClients);
         if (!listOfIpOrClients.isEmpty()) {
             List<PostRequest> requestList = createListObjectsForPost(listOfIpOrClients);
             List<GetResponse> responseList = new ArrayList<>();
@@ -82,6 +80,26 @@ public abstract class CoreFssp {
                 getCacheWork().saveCache();//сохраняем кэш
                 getCacheWork().saveCasheToFile(getOutputTaskFile());
             }
+        }
+    }
+
+    public void deleteCache(List<String> list){
+        List<String> cacheList = new ArrayList<>();
+        //проверяем что кэш есть
+        if (!cacheWork.getCacheMap().isEmpty()) {
+            //получаем первый элемент в листе и определяем его вид
+            Params tmp = cacheWork.getCacheMap().keySet().iterator().next();
+            if (tmp.getNumber() == null) {
+                cacheList = cacheWork.getCacheMap().keySet().stream()
+                        .map(x -> x.getLastname() + ";" + x.getFirstname() + ";" + x.getSecondname() + ";" + x.getBirthdate() + ";" + x.getRegion())
+                        .collect(Collectors.toList());
+            } else {
+                cacheList = cacheWork.getCacheMap().keySet().stream()
+                        .map(x->x.getNumber()).collect(Collectors.toList());
+            }
+            boolean isDeleted = list.removeAll(cacheList);//удаляем из списка то что уже загружено
+            if (isDeleted)
+                System.out.println("Найдена информация в кэше, к загрузке " + list.size());
         }
     }
 

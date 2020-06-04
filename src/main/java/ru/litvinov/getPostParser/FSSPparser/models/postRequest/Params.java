@@ -4,8 +4,10 @@ package ru.litvinov.getPostParser.FSSPparser.models.postRequest;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Params {
+public class Params implements Serializable {
     private String firstname;
     private String lastname;
     private String secondname;

@@ -66,7 +66,13 @@ public class LogicIp implements Logic {
                 System.out.println("Много запросов спим 1 минуту");
                 Thread.sleep(60000);
                 getResponse = sendPost(body);
-            } else {
+            } else if (e.getMessage().contains("connect timed out")) {
+                //Если проблема с таймаутом
+                System.out.println("Таймаут ждем 3 минуты");
+                Thread.sleep(180000);
+                getResponse = sendPost(body);
+            }
+            else {
                 throw e;
             }
         }

@@ -1,6 +1,7 @@
 package ru.litvinov.getPostParser.FSSPparser.core.cache;
 
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
+import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Params;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
 import ru.litvinov.getPostParser.utils.serialize.SerializationImpl;
 
@@ -12,7 +13,7 @@ import java.util.Map;
 public abstract class CacheWork implements Serializable {
 
     transient String casheFile;
-    Map cacheMap = new HashMap();
+    Map<Params,GetResponse> cacheMap = new HashMap();
 
     public CacheWork() {
     }
@@ -47,11 +48,11 @@ public abstract class CacheWork implements Serializable {
         this.casheFile = casheFile;
     }
 
-    public Map getCacheMap() {
+    public Map<Params,GetResponse> getCacheMap() {
         return cacheMap;
     }
 
-    public void setCacheMap(Map<String, GetResponse> cacheMap) {
+    public void setCacheMap(Map<Params, GetResponse> cacheMap) {
         this.cacheMap = cacheMap;
     }
 

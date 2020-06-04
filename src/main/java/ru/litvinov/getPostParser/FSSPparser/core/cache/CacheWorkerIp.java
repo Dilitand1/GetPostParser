@@ -1,6 +1,7 @@
 package ru.litvinov.getPostParser.FSSPparser.core.cache;
 
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
+import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Params;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.PostRequest;
 import ru.litvinov.getPostParser.FSSPparser.models.postRequest.Request;
 import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CacheWorkerIp extends CacheWork implements Serializable {
 
-    private Map<String, GetResponse> cacheMap = new HashMap<>();
+    private Map<Params, GetResponse> cacheMap = new HashMap<>();
 
     public CacheWorkerIp() {
         super.casheFile = "cacheFileIp.dat";
@@ -30,7 +31,6 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
     public void init() {
         try {
          //   throw new IOException("Кэш временно отключен из за проблем с реализацией.");
-
             BasicFileAttributes basicFileAttributes = Files.readAttributes(Paths.get(casheFile), BasicFileAttributes.class);
             Date creationDate = new Date(basicFileAttributes.creationTime().to(TimeUnit.MILLISECONDS));
             if (creationDate.getTime() < (new Date().getTime() - (22 * 60 * 60 * 1000))) {
@@ -41,7 +41,7 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
             }
             CacheWorkerIp cacheWorkerIp = (CacheWorkerIp) SerializationImpl.loadObject(casheFile);
             this.cacheMap.putAll(cacheWorkerIp.cacheMap);
-            printCache();
+            //printCache();
             System.out.println("Кэш загружен");
 
         } catch (IOException e) {
@@ -54,9 +54,9 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
         List<Request> requests = postRequest.getRequest();
 
         for (int i = 0; i < requests.size(); i++) {
-            String request = requests.get(i).getParams().toString();
-            if (cacheMap.get(request) == null || !cacheMap.get(request).getStatus().equals("success")) {
-                cacheMap.put(request, getResponse);
+            //String request = requests.get(i).getParams().toString();
+            if (cacheMap.get(requests.get(i).getParams()) == null || !cacheMap.get(requests.get(i).getParams()).getStatus().equals("success")) {
+                cacheMap.put(requests.get(i).getParams(), getResponse);
             }
         }
     }
@@ -70,11 +70,11 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
     @Override
     public void saveCasheToFile(String outputFile) {
         FileUtils.removeFile(outputFile);
-        for (Map.Entry<String, GetResponse> entry : cacheMap.entrySet()) {
+        for (Map.Entry<Params, GetResponse> entry : cacheMap.entrySet()) {
             FileUtils.writeFile(entry.getValue().getResponse().getTask()
                     + "~" + entry.getValue().getStatus() + "~" + entry.getValue().getCode()
                     + "~" + entry.getValue().getException()
-                    + "~" + entry.getKey() + "\n", outputFile, true);
+                    + "~" + entry.getKey().toString() + "\n", outputFile, true);
         }
     }
 }
