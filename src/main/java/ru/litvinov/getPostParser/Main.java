@@ -5,6 +5,7 @@ import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,7 +17,15 @@ public class Main {
     private static String outputSuccessFile = "outputSuccessFile.txt";
 
     public static void main(String[] args) throws Exception {
-        System.out.println("ðÓÑ");
+        allregions();
+    }
+
+    public static void print() throws IOException, InterruptedException {
+        List<String> list = Files.readAllLines(Paths.get("inputFile.txt"));
+        for(String s : list){
+            System.out.println(s);
+            Thread.sleep(1000);
+        }
     }
 
     public static void deleteDownloaded(){
@@ -26,7 +35,7 @@ public class Main {
     }
 
     public static void allregions() throws IOException {
-        String s = FileUtils.readFile("tmp.txt","Windows-1251");
+        String s = FileUtils.readFile("tmp.txt", "UTF-8");
         String[] tmpArray = s.split("\n");
         List<String> strings = Arrays.asList(tmpArray);
 

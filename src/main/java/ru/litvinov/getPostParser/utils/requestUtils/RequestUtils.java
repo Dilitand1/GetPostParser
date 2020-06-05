@@ -111,6 +111,7 @@ public class RequestUtils {
                 //пишем тело запроса в байтыё
                 byte[] bytes = new byte[connection.getErrorStream().available()];
                 connection.getErrorStream().read(bytes);
+                //System.out.println(new String(bytes));
                 throw new RequestException(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n", new String(bytes));
                 //throw new Exception(connection.getResponseCode() + "\n" + connection.getResponseMessage() + "\n" + body);
             }

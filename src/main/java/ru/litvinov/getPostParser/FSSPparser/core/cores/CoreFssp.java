@@ -55,7 +55,7 @@ public abstract class CoreFssp {
     //Получаем результаты
     public List<GetResult> getResults() throws Exception {
         //читаем строки из файла. Берем только первый столбец
-        List<String> inputList = Files.readAllLines(Paths.get(outputTaskFile), Charset.forName("Windows-1251")).stream().map(x -> x.split("~")[0]).distinct().collect(Collectors.toList());
+        List<String> inputList = Files.readAllLines(Paths.get(outputTaskFile), Charset.forName("UTF-8")).stream().map(x -> x.split("~")[0]).distinct().collect(Collectors.toList());
         List<GetResult> resultList = new ArrayList<>();
         for (int i = 0; i < inputList.size(); i++) {
             GetResult getResult = (GetResult) logic.takeResult(inputList.get(i), token);

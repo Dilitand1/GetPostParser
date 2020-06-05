@@ -18,7 +18,7 @@ public class CoreFsspFio extends CoreFssp {
     public List<PostRequest> createListObjectsForPost(List inputList) {
         List<PostRequest> postRequests = new ArrayList<>();
         //режем на части по 50 штук.
-        for (int i = 0; i <= inputList.size() / 50; i++) {
+        for (int i = 0; i < inputList.size() / 50; i++) {
             PostRequest postRequest = new PostRequest();
             postRequest.setToken(getToken());
             List<Request> requests = new ArrayList<>();
