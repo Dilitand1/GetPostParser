@@ -10,12 +10,12 @@ import java.util.Map;
 
 public class FileUtils {
 
-    public static String readFile(String path) {
+    public static String readFile(String path,String charset) {
         String s = "";
         try (FileInputStream fis = new FileInputStream(path)) {
             byte[] bytes = new byte[fis.available()];
             fis.read(bytes);
-            s = new String(bytes);
+            s = new String(bytes,charset);
         } catch (IOException e) {
             System.out.println(e.getMessage());
             System.exit(0);
@@ -23,13 +23,15 @@ public class FileUtils {
         return s;
     }
 
-    public static String readFile(File file) {
-        return readFile(file.getAbsolutePath());
+    public static String readFile(File file,String charset) {
+        return readFile(file.getAbsolutePath(),charset);
     }
 
     public static synchronized void writeFile(String text, String path, boolean b) {
-        try (FileOutputStream fos = new FileOutputStream(path, b)) {
-            fos.write(text.getBytes());
+        //System.out.println(text);
+        try (FileOutputStream writer = new FileOutputStream(path,b)) {
+            //writer.write(text);
+            writer.write(text.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

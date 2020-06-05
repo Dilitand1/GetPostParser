@@ -56,23 +56,27 @@ public class LogicIp implements Logic {
             //отправляем запрос
             String responseString = RequestUtils.postRequest(url, body, map);
             getResponse = (GetResponse) JsonUtils.jsonToObject(responseString, GetResponse.class);
-            Thread.sleep(5000); //спим 5 секунд
+            Thread.sleep(3000); //спим 5 секунд
         } catch (Exception e) {
             //если косяк то обрабатываем ошибку
             String[] splitMessage = e.getMessage().split("\n");
             Arrays.stream(splitMessage).limit(2).forEach(x-> System.out.print(x + "\t"));
             if (e.getMessage().contains("Too Many")) {
                 //Если много запросов то ждем 30 сек
-                System.out.println("Много запросов спим 1 минуту");
-                Thread.sleep(60000);
+                System.out.println("Много запросов спим 10 сек");
+                Thread.sleep(10000);
                 getResponse = sendPost(body);
             } else if (e.getMessage().contains("connect timed out")) {
                 //Если проблема с таймаутом
                 System.out.println("Таймаут ждем 3 минуты");
                 Thread.sleep(180000);
                 getResponse = sendPost(body);
-            }
-            else {
+            } else if (e.getMessage().contains("No subject alternative DNS name")) {
+                //Если проблема с таймаутом
+                System.out.println("Таймаут ждем 3 минуты");
+                Thread.sleep(180000);
+                getResponse = sendPost(body);
+            } else {
                 throw e;
             }
         }

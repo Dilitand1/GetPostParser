@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CacheWorkerIp extends CacheWork implements Serializable {
 
-    private Map<Params, GetResponse> cacheMap = new HashMap<>();
+    //private Map<Params, GetResponse> cacheMap = new LinkedHashMap<>();
 
     public CacheWorkerIp() {
         super.casheFile = "cacheFileIp.dat";

@@ -8,12 +8,13 @@ import ru.litvinov.getPostParser.utils.serialize.SerializationImpl;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class CacheWork implements Serializable {
 
     transient String casheFile;
-    Map<Params,GetResponse> cacheMap = new HashMap();
+    Map<Params,GetResponse> cacheMap = new LinkedHashMap<>();
 
     public CacheWork() {
     }

@@ -12,6 +12,8 @@ import ru.litvinov.getPostParser.FSSPparser.models.result.ResultUnion;
 import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
 import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -53,7 +55,7 @@ public abstract class CoreFssp {
     //Получаем результаты
     public List<GetResult> getResults() throws Exception {
         //читаем строки из файла. Берем только первый столбец
-        List<String> inputList = Files.readAllLines(Paths.get(outputTaskFile)).stream().map(x -> x.split("~")[0]).distinct().collect(Collectors.toList());
+        List<String> inputList = Files.readAllLines(Paths.get(outputTaskFile), Charset.forName("Windows-1251")).stream().map(x -> x.split("~")[0]).distinct().collect(Collectors.toList());
         List<GetResult> resultList = new ArrayList<>();
         for (int i = 0; i < inputList.size(); i++) {
             GetResult getResult = (GetResult) logic.takeResult(inputList.get(i), token);
@@ -75,12 +77,16 @@ public abstract class CoreFssp {
                 GetResponse getResponse = (GetResponse) getLogic().sendPost(requestString);
                 responseList.add(getResponse);
                 System.out.println("Отправлено " + (Math.min((i + 1) * 50, listOfIpOrClients.size())) + " из " + listOfIpOrClients.size());
-                //работаем с кэшем
+                //работаем с кэшем. Сохраняем каждые 10 итераций
                 getCacheWork().writePostRequestResult(requestList.get(i), getResponse);//пишем в кэш
-                getCacheWork().saveCache();//сохраняем кэш
-                getCacheWork().saveCasheToFile(getOutputTaskFile());
+                if ((i+1)%10 == 0) {
+                    getCacheWork().saveCache();//сохраняем кэш
+                    getCacheWork().saveCasheToFile(getOutputTaskFile());//сохраняем в файл
+                }
             }
         }
+        getCacheWork().saveCache();//сохраняем кэш
+        getCacheWork().saveCasheToFile(getOutputTaskFile());//сохраняем в файл
     }
 
     public void deleteCache(List<String> list){

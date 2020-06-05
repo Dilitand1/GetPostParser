@@ -6,6 +6,7 @@ import ru.litvinov.getPostParser.FSSPparser.core.cores.CoreFsspFio;
 import ru.litvinov.getPostParser.FSSPparser.core.cores.CoreFsspIp;
 import ru.litvinov.getPostParser.FSSPparser.core.logic.LogicIp;
 
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public class MainFssp {
@@ -15,13 +16,15 @@ public class MainFssp {
     static String token_old2 = "2oFwTlKyEa92";
 
     public static void main(String[] args) throws Exception {
+//        PrintStream out = new PrintStream(System.out, true, "Unicode");
+//        System.setOut(out);
         proceesing();
     }
 
     public static void proceesing() throws Exception {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Введите 1 для отправки запросов с ИП, введите 2 для отправки запросов Ф;И;О;ДР;регион, введите 3 для получения ответов из ФССП по ранее отправленным ИП");
-        if (!scanner.hasNextInt()){
+        if (!scanner.hasNextInt()) {
             System.out.println("Введите число");
             proceesing();
         } else {
@@ -30,8 +33,7 @@ public class MainFssp {
                 runRequestIp();
             } else if (i == 2) {
                 runRequestFl();
-            }
-            else if (i == 3) {
+            } else if (i == 3) {
                 runResult();
             } else {
                 System.out.println("Введите 1 или 2 или 3");
@@ -58,7 +60,7 @@ public class MainFssp {
     }
 
     public static void runResult() throws Exception {
-        CoreFssp coreFssp = new CoreFsspIp(token2,new LogicIp());
+        CoreFssp coreFssp = new CoreFsspIp(token2, new LogicIp());
         coreFssp.getResults();
     }
 }
