@@ -41,7 +41,7 @@ public class Main {
 
         for (int j = 0; j < strings.size(); j++) {
             for (int i = 1; i <= 100; i++) {
-                //Thread.sleep(1000);;
+                //Thread.sleep(1000);
                 FileUtils.writeFile(strings.get(j).trim() + ";" + i + "\n","outputTmp.txt",true);
             }
         }

@@ -68,6 +68,7 @@ public abstract class CoreFssp {
 
     public void sendPosts() throws Exception {
         List<String> listOfIpOrClients = Files.readAllLines(Paths.get(getInputFile())); //грузим все строки
+        System.out.println(listOfIpOrClients);
         deleteCache(listOfIpOrClients);
         if (!listOfIpOrClients.isEmpty()) {
             List<PostRequest> requestList = createListObjectsForPost(listOfIpOrClients);
