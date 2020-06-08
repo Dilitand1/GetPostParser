@@ -3,6 +3,7 @@ package ru.litvinov.getPostParser.utils.fileUtils;
 import ru.litvinov.getPostParser.FSSPparser.models.getResponse.GetResponse;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 public class FileUtils {
 
-    public static String readFile(String path,String charset) {
+    public static String readFile(String path,Charset charset) {
         String s = "";
         try (FileInputStream fis = new FileInputStream(path)) {
             byte[] bytes = new byte[fis.available()];
@@ -23,8 +24,16 @@ public class FileUtils {
         return s;
     }
 
-    public static String readFile(File file,String charset) {
+    public static String readFile(String path) {
+        return readFile(path,Charset.defaultCharset());
+    }
+
+    public static String readFile(File file,Charset charset) {
         return readFile(file.getAbsolutePath(),charset);
+    }
+
+    public static String readFile(File file) {
+        return readFile(file.getAbsolutePath(),Charset.defaultCharset());
     }
 
     public static synchronized void writeFile(String text, String path, boolean b) {
@@ -75,6 +84,16 @@ public class FileUtils {
             for (int i = 0; i < bytes.length; i++) {
                 fos.write(bytes[i]);
             }
+        }
+    }
+
+    public static synchronized void writeFile(String text, String path, boolean b, Charset charset) {
+        //System.out.println(text);
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path,b),charset)) {
+            //writer.write(text);
+            writer.write(text);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

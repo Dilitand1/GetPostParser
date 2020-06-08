@@ -29,18 +29,19 @@ public class Main {
     }
 
     public static void deleteDownloaded(){
-        String s = FileUtils.readFile("inputFile.txt","Windows-1251");
+        String s = FileUtils.readFile("inputFile.txt");
         String[] tmpArray = s.split("\n");
         List<String> strings = Arrays.asList(tmpArray);
     }
 
-    public static void allregions() throws IOException {
-        String s = FileUtils.readFile("tmp.txt", "UTF-8");
+    public static void allregions() throws IOException, InterruptedException {
+        String s = FileUtils.readFile("tmp.txt");
         String[] tmpArray = s.split("\n");
         List<String> strings = Arrays.asList(tmpArray);
 
         for (int j = 0; j < strings.size(); j++) {
             for (int i = 1; i <= 100; i++) {
+                //Thread.sleep(1000);;
                 FileUtils.writeFile(strings.get(j).trim() + ";" + i + "\n","outputTmp.txt",true);
             }
         }
