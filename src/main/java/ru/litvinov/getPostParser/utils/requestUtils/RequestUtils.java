@@ -21,8 +21,8 @@ public class RequestUtils {
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setRequestMethod("GET"); //Задаем тип запроса
-            connection.setConnectTimeout(1500); //задаем таймауты
-            connection.setReadTimeout(1500);
+            connection.setConnectTimeout(15000); //задаем таймауты
+            connection.setReadTimeout(15000);
 
             //Пример хедеров
             //connection.setRequestProperty("Content-Language", "en-US"); //пример хеадеров
