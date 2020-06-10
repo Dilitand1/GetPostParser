@@ -12,15 +12,15 @@ import ru.litvinov.getPostParser.FSSPparser.models.result.ResultUnion;
 import ru.litvinov.getPostParser.utils.fileUtils.FileUtils;
 import ru.litvinov.getPostParser.utils.jsonUtils.JsonUtils;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 public abstract class CoreFssp {
@@ -31,6 +31,7 @@ public abstract class CoreFssp {
     private String outputTaskFile = "outputTaskFile.txt";
     private String outputSuccessResultFile = "outputSuccessResultFile.txt";
     private String outputFailedResultFile = "outputFailedResultFile.txt";
+    private static ConcurrentLinkedQueue concurrentLinkedQueue = new ConcurrentLinkedQueue();
     private CacheWork cacheWork;
 
     public CoreFssp() {
@@ -71,15 +72,16 @@ public abstract class CoreFssp {
         deleteCache(listOfIpOrClients);
         if (!listOfIpOrClients.isEmpty()) {
             List<PostRequest> requestList = createListObjectsForPost(listOfIpOrClients);
-            List<GetResponse> responseList = new ArrayList<>();
+
+            //List<GetResponse> responseList = new ArrayList<>();
             for (int i = 0; i < requestList.size(); i++) {
                 String requestString = JsonUtils.objectToJson(requestList.get(i));
                 GetResponse getResponse = (GetResponse) getLogic().sendPost(requestString);
-                responseList.add(getResponse);
+                //responseList.add(getResponse);
                 System.out.println("Отправлено " + (Math.min((i + 1) * 50, listOfIpOrClients.size())) + " из " + listOfIpOrClients.size());
-                //работаем с кэшем. Сохраняем каждые 10 итераций
+                //работаем с кэшем. Сохраняем каждые 25 итераций
                 getCacheWork().writePostRequestResult(requestList.get(i), getResponse);//пишем в кэш
-                if ((i+1)%10 == 0) {
+                if ((i+1)%25 == 0) {
                     getCacheWork().saveCache();//сохраняем кэш
                     getCacheWork().saveCasheToFile(getOutputTaskFile());//сохраняем в файл
                 }
@@ -87,6 +89,13 @@ public abstract class CoreFssp {
         }
         getCacheWork().saveCache();//сохраняем кэш
         getCacheWork().saveCasheToFile(getOutputTaskFile());//сохраняем в файл
+    }
+
+    public void cacheWork() throws IOException {
+        List<String> listOfIpOrClients = Files.readAllLines(Paths.get(getInputFile())); //грузим все строки
+        deleteCache(listOfIpOrClients);
+        List<PostRequest> requestList = createListObjectsForPost(listOfIpOrClients);
+        concurrentLinkedQueue = new ConcurrentLinkedQueue(requestList);
     }
 
     public void deleteCache(List<String> list){

@@ -14,7 +14,9 @@ import java.util.Map;
 public abstract class CacheWork implements Serializable {
 
     transient String casheFile;
+    transient volatile boolean isLoaded;
     Map<Params,GetResponse> cacheMap = new LinkedHashMap<>();
+
 
     public CacheWork() {
     }

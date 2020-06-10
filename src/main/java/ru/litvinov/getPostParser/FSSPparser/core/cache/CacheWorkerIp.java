@@ -29,30 +29,35 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
     }
 
     public void init() {
-        try {
-         //   throw new IOException("Кэш временно отключен из за проблем с реализацией.");
-            BasicFileAttributes basicFileAttributes = Files.readAttributes(Paths.get(casheFile), BasicFileAttributes.class);
-            Date creationDate = new Date(basicFileAttributes.creationTime().to(TimeUnit.MILLISECONDS));
-            if (creationDate.getTime() < (new Date().getTime() - (22 * 60 * 60 * 1000))) {
-                System.out.println("Кэш устарел");
-                FileUtils.renameFile(casheFile,"old" + casheFile);
-                FileUtils.removeFile(casheFile);
-                throw new IOException("Кэш устарел");
-            }
-            CacheWorkerIp cacheWorkerIp = (CacheWorkerIp) SerializationImpl.loadObject(casheFile);
-            this.cacheMap.putAll(cacheWorkerIp.cacheMap);
-            //printCache();
-            System.out.println("Кэш загружен");
+        if (!isLoaded) {
+            synchronized (CacheWorkerIp.class) {
+                if (!isLoaded) {
+                    try {
+                        //   throw new IOException("Кэш временно отключен из за проблем с реализацией.");
+                        BasicFileAttributes basicFileAttributes = Files.readAttributes(Paths.get(casheFile), BasicFileAttributes.class);
+                        Date creationDate = new Date(basicFileAttributes.creationTime().to(TimeUnit.MILLISECONDS));
+                        if (creationDate.getTime() < (new Date().getTime() - (22 * 60 * 60 * 1000))) {
+                            System.out.println("Кэш устарел");
+                            FileUtils.renameFile(casheFile, "old" + casheFile);
+                            FileUtils.removeFile(casheFile);
+                            throw new IOException("Кэш устарел");
+                        }
+                        CacheWorkerIp cacheWorkerIp = (CacheWorkerIp) SerializationImpl.loadObject(casheFile);
+                        this.cacheMap.putAll(cacheWorkerIp.cacheMap);
+                        //printCache();
+                        System.out.println("Кэш загружен");
 
-        } catch (IOException e) {
-            System.out.println("Кэш не найден");
+                    } catch (IOException e) {
+                        System.out.println("Кэш не найден");
+                    }
+                }
+            }
         }
     }
 
     @Override
-    public void writePostRequestResult(PostRequest postRequest, GetResponse getResponse) {
+    public synchronized void writePostRequestResult(PostRequest postRequest, GetResponse getResponse) {
         List<Request> requests = postRequest.getRequest();
-
         for (int i = 0; i < requests.size(); i++) {
             //String request = requests.get(i).getParams().toString();
             if (cacheMap.get(requests.get(i).getParams()) == null || !cacheMap.get(requests.get(i).getParams()).getStatus().equals("success")) {
@@ -62,13 +67,13 @@ public class CacheWorkerIp extends CacheWork implements Serializable {
     }
 
     @Override
-    public void saveCache() {
+    public synchronized void saveCache() {
         //FileUtils.writeFile(cacheMap, casheFile);
         SerializationImpl.saveObject(this, casheFile);
     }
 
     @Override
-    public void saveCasheToFile(String outputFile) {
+    public synchronized void saveCasheToFile(String outputFile) {
         FileUtils.removeFile(outputFile);
         for (Map.Entry<Params, GetResponse> entry : cacheMap.entrySet()) {
             FileUtils.writeFile(entry.getValue().getResponse().getTask()
