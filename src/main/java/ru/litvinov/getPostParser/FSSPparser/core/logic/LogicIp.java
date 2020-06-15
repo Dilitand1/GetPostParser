@@ -77,7 +77,9 @@ public class LogicIp implements Logic {
                 Thread.sleep(300000);
                 getResponse = sendPost(body);
             } else {
-                throw e;
+                System.out.println("Неизвестная ошибка ждем 5 минут");
+                Thread.sleep(300000);
+                getResponse = sendPost(body);
             }
         }
         //String responseString = RequestUtils.postRequest(url, body, map);

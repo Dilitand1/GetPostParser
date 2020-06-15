@@ -21,8 +21,8 @@ public class RequestUtils {
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setRequestMethod("GET"); //Задаем тип запроса
-            connection.setConnectTimeout(15000); //задаем таймауты
-            connection.setReadTimeout(15000);
+            connection.setConnectTimeout(150000); //задаем таймауты
+            connection.setReadTimeout(150000);
 
             //Пример хедеров
             //connection.setRequestProperty("Content-Language", "en-US"); //пример хеадеров
@@ -70,8 +70,8 @@ public class RequestUtils {
         try {
             URL url = new URL(myUrl); // here is your URL path
             HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy); //открываем коннект
-            connection.setReadTimeout(15000 /* milliseconds */);
-            connection.setConnectTimeout(15000 /* milliseconds */);
+            connection.setReadTimeout(150000 /* milliseconds */);
+            connection.setConnectTimeout(150000 /* milliseconds */);
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
             connection.setDoOutput(true);
