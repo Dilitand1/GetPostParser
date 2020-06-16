@@ -1,6 +1,6 @@
 Реализация get/post. https://github.com/Dilitand1/GetPostParser/tree/master/src/main/java/ru/litvinov/getPostParser/utils/requestUtils
 
-Реализован пример работы с Rest сервисом ФССП:
+Реализована работа с Rest сервисом ФССП:
 https://github.com/Dilitand1/GetPostParser/tree/master/src/main/java/ru/litvinov/getPostParser/FSSPparser
 
 Реализован парсер сайта нотариата по умершим клиентам (частично со спрингом):
