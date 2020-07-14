@@ -2,3 +2,7 @@
 /target/
 inputfile.txt
 cacheFileIp.dat
+outputSuccessResultFile.txt
+outputTaskFile.txt
+tmp.txt
+*.iml

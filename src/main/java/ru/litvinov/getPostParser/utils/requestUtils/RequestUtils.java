@@ -11,7 +11,6 @@ import java.util.Map;
 public class RequestUtils {
 
     String charset;
-
     //get
     public static String getRequest(String query, Proxy proxy, Map headers) throws Exception {
         HttpURLConnection connection = null;
@@ -34,7 +33,6 @@ public class RequestUtils {
                     connection.setRequestProperty(entry.getKey(), entry.getValue());
                 }
             }
-
             if (HttpURLConnection.HTTP_OK == connection.getResponseCode()) {
                 //получаем ответ
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "Windows-1251"));
@@ -100,7 +98,7 @@ public class RequestUtils {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 //получаем ответ
                 StringBuffer sb = new StringBuffer();
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));) {
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));) {
                     String line = "";
                     while ((line = in.readLine()) != null) {
                         sb.append(line);

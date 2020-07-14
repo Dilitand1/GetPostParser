@@ -53,7 +53,7 @@ public class MainFssp {
 
     public static void runRequestIp() throws Exception {
         CoreFssp core = new CoreFsspIp(token2, new LogicIp());
-        core.setInputFile("inputfile.txt");
+        core.setInputFile("inputFile.txt");
         core.setCacheWork(new CacheWorkerIp());
         core.getCacheWork().init();
         core.sendPosts();

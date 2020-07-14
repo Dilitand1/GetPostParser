@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+
+//Скриптик чтобы сделать набор по всем регионам
 public class Main {
 
     private static String outputSuccessFile = "outputSuccessFile.txt";
